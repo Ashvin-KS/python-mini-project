@@ -41,11 +41,15 @@ function get2048GameHTML() {
 
     margin-top: 20px;
 
-    background: #1f2937;
+    background: var(--surface-color);
+
+    border: 1px solid var(--border-color);
 
     padding: 20px;
 
     border-radius: 15px;
+
+    color: var(--text-color);
 }
 
                 .score-board {
@@ -56,8 +60,9 @@ function get2048GameHTML() {
                 }
 
                 .score-box {
-                    background: #bbada0;
-                    color: white;
+                    background: var(--accent-soft);
+                    border: 1px solid var(--accent-border);
+                    color: var(--text-color);
                     padding: 10px 20px;
                     border-radius: 10px;
                     font-weight: bold;
@@ -69,7 +74,8 @@ function get2048GameHTML() {
                     display: grid;
                     grid-template-columns: repeat(4, 100px);
                     gap: 10px;
-                    background: #bbada0;
+                    background: var(--panel-color);
+                    border: 2px solid var(--accent-border);
                     padding: 10px;
                     border-radius: 10px;
                 }
@@ -77,7 +83,7 @@ function get2048GameHTML() {
                 .tile {
     width: 100px;
     height: 100px;
-    background: #cdc1b4;
+    background: var(--control-color);
 
     display: flex;
     justify-content: center;
@@ -88,9 +94,9 @@ function get2048GameHTML() {
 
     border-radius: 12px;
 
-    color: #776e65;
+    color: var(--text-color);
 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
 
     transition: all 0.15s ease-in-out;
 
@@ -106,8 +112,6 @@ function get2048GameHTML() {
 #restart-btn:hover {
 
     transform: scale(1.05);
-
-    background: #8c6f4e;
 }
 
             </style>
@@ -206,7 +210,7 @@ bestDisplay.textContent = bestScore;
                     getTileColor(cell);
 
                 if(cell > 4) {
-                    tile.style.color = "#fff";
+                    tile.style.color = "var(--on-accent)";
                 }
 
                 gridContainer.appendChild(tile);
@@ -231,7 +235,7 @@ bestDisplay.textContent = bestScore;
     function getTileColor(value) {
 
     const colors = {
-        0: "#cdc1b4",
+        0: "var(--control-color)",
         2: "#eee4da",
         4: "#ede0c8",
         8: "#f2b179",
@@ -246,7 +250,7 @@ bestDisplay.textContent = bestScore;
         4096: "#ff5733"
     };
 
-    return colors[value] || "#3c3a32";
+    return colors[value] || "var(--accent-color)";
 }
 
     function slide(row) {
