@@ -699,5 +699,70 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+    // ── Share Button Feature ──────────────────────────────────────────
+
+// 1. Inject share button into every card dynamically
+projectCards.forEach(function (card) {
+    var projectName = card.getAttribute('data-project');
+    var shareBtn = document.createElement('button');
+    shareBtn.className = 'btn-share';
+    shareBtn.setAttribute('aria-label', 'Share ' + projectName);
+    shareBtn.innerHTML = '🔗';
+    shareBtn.title = 'Copy shareable link';
+
+    shareBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); // prevent card click opening modal
+        var url = window.location.origin + window.location.pathname + '?project=' + encodeURIComponent(projectName);
+        navigator.clipboard.writeText(url).then(function () {
+            showToast('Link copied!');
+        }).catch(function () {
+            // Fallback for browsers that block clipboard
+            showToast('Copy this: ' + url);
+        });
+    });
+
+    card.appendChild(shareBtn);
+});
+
+// 2. Toast notification helper
+function showToast(message) {
+    var existing = document.getElementById('shareToast');
+    if (existing) existing.remove();
+
+    var toast = document.createElement('div');
+    toast.id = 'shareToast';
+    toast.className = 'share-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(function () {
+        toast.classList.add('share-toast--visible');
+    });
+
+    setTimeout(function () {
+        toast.classList.remove('share-toast--visible');
+        setTimeout(function () { toast.remove(); }, 300);
+    }, 2500);
+}
+
+// 3. On page load, check for ?project= param and auto-open it
+(function () {
+    var params = new URLSearchParams(window.location.search);
+    var projectParam = params.get('project');
+    if (!projectParam) return;
+
+    var matchingCard = projectCards.find(function (card) {
+        return card.getAttribute('data-project') === projectParam;
+    });
+
+    if (matchingCard) {
+        setTimeout(function () {
+            var projectName = matchingCard.getAttribute('data-project');
+            openProjectSafe(projectName, matchingCard);
+            matchingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300); // small delay so the page fully loads first
+    }
+})();
 
 });

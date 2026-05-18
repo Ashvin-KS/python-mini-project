@@ -18,6 +18,9 @@
     <meta name="twitter:description" content="Interactive games, math visualizations, and utilities in the browser.">
     <title>Python Mini Projects - Interactive Web Edition</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -325,6 +328,37 @@
             font-weight: 700;
             color: var(--text-color);
         }
+        .btn-stop {
+            background: linear-gradient(135deg, #d22b44, #dc1331);
+            color: #fff;
+            border: none;
+            padding: 0.85rem 2.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+
+        }
+
+        .btn-stop:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px #e74c3c;
+        }
+
+        .btn-stop:active {
+            transform: translateY(0);
+        }
+
+        .btn-stop:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
         /* ── Reduced-motion overrides for playground ────────────────── */
         @media (prefers-reduced-motion: reduce) {
@@ -512,11 +546,13 @@
     <!-- Navigation -->
     <nav class="navbar" aria-label="Primary">
         <div class="container">
-            <div class="logo">
-                <h1>
-                    <i data-lucide="gamepad-2" class="logo-icon"></i>
-                    Python Mini Projects
-                </h1>
+            <div class="navbar-brand">
+                <div class="logo">
+                    <h1>
+                        <span class="logo-py">py</span><span class="logo-mini">.mini</span><span class="logo-parens">()</span>
+                    </h1>
+                </div>
+                <div class="navbar-tagline">games, math &amp; terminal toys</div>
             </div>
 
         <!-- Search Bar -->
@@ -545,33 +581,47 @@
     <main id="main-content" tabindex="-1">
         <!-- Hero Section -->
         <section class="hero-section" aria-label="Welcome">
-            <div class="hero-background"></div>
-            <canvas id="boardCanvas"></canvas>
+            <div class="hero-background color-bends-container" aria-hidden="true"></div>
+            <div class="hero-code-snippets" aria-hidden="true">
+                <span class="code-snippet snippet-one">score += 1</span>
+                <span class="code-snippet snippet-two">if guess == word:</span>
+                <span class="code-snippet snippet-three">print("You win!")</span>
+                <span class="code-snippet snippet-four">while lives &gt; 0:</span>
+                <span class="code-snippet snippet-five">roll = randint(1, 6)</span>
+                <span class="code-snippet snippet-six">moves.append(player)</span>
+                <span class="code-snippet snippet-seven">return is_prime(n)</span>
+            </div>
             <div class="container">
                 <div class="hero-content">
+                    <p class="hero-kicker">interactive python lab</p>
                     <h2 class="hero-title">Learn Python the Fun Way!</h2>
-                    <p class="hero-subtitle">25+ Mini Projects • Beautiful UI • Beginner Friendly • Zero Dependencies</p>
+                    <p class="hero-subtitle">Small browser experiments for games, math, utilities, and terminal-style practice.</p>
+                    <div class="hero-meta" aria-label="Project summary">
+                        <span>25+ projects</span>
+                        <span>zero setup</span>
+                        <span>beginner friendly</span>
+                    </div>
 
                     <div class="hero-features" role="tablist" aria-label="Project categories">
                         <button class="feature-badge tab active" data-category="all"
                                 role="tab" aria-selected="true" tabindex="0">
                             <span class="feature-icon"><i data-lucide="star"></i></span>
-                            <span class="feature-label">All Projects</span>
+                            <span class="feature-label">all</span>
                         </button>
                         <button class="feature-badge tab" data-category="games"
                                 role="tab" aria-selected="false" tabindex="-1">
                             <span class="feature-icon"><i data-lucide="gamepad-2"></i></span>
-                            <span class="feature-label">Games</span>
+                            <span class="feature-label">games</span>
                         </button>
                         <button class="feature-badge tab" data-category="math"
                                 role="tab" aria-selected="false" tabindex="-1">
                             <span class="feature-icon"><i data-lucide="hash"></i></span>
-                            <span class="feature-label">Math</span>
+                            <span class="feature-label">math</span>
                         </button>
                         <button class="feature-badge tab" data-category="utilities"
                                 role="tab" aria-selected="false" tabindex="-1">
                             <span class="feature-icon"><i data-lucide="lock"></i></span>
-                            <span class="feature-label">Utilities</span>
+                            <span class="feature-label">utilities</span>
                         </button>
                         <!--
                             PLAYGROUND TAB
@@ -582,13 +632,13 @@
                         <button class="feature-badge tab" data-category="playground" id="playgroundTab"
                                 role="tab" aria-selected="false" tabindex="-1">
                             <span class="feature-icon"><i data-lucide="terminal"></i></span>
-                            <span class="feature-label">Playground</span>
+                            <span class="feature-label">playground</span>
                         </button>
                     </div>
 
                     <button class="btn-random-project" id="randomProjectBtn"
                             title="Discover a random project!">
-                        <i data-lucide="dice-5"></i> Random Project
+                        launch random →
                     </button>
                 </div>
             </div>
@@ -963,15 +1013,16 @@
 
                 </div><!-- /playground-body -->
 
-                <!-- Run button row -->
+                <!-- Run and Stop button row -->
                 <div class="playground-controls">
                     <button type="button" class="btn-run" id="runCode" disabled aria-label="Run Python code">
                         <i class="fas fa-play" aria-hidden="true"></i>
                         Run Code
                     </button>
-                    <span class="run-hint">
-                        or press <kbd>Ctrl</kbd>+<kbd>Enter</kbd>
-                    </span>
+                    <button type="button" class="btn-stop" id="stopCode" disabled aria-label="Stop execution">
+                        <i class="fas fa-stop" aria-hidden="true"></i> 
+                        Stop Execution
+                    </button>
                 </div>
 
             </div>
@@ -1125,9 +1176,6 @@
     </script>
     <script src="js/hero-canvas.js"></script>
 
-    <script>
-        lucide.createIcons();
-    </script>
     <!-- Search Functionality -->
 <script>
 const searchInput = document.getElementById("searchInput");
