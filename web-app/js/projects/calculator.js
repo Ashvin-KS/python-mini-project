@@ -3,47 +3,47 @@ function getCalculatorHTML() {
     <div class="project-content">
         <h2>🧮 Ultra Pro Calculator</h2>
 
-        <div class="calculator">
+        <div class="calculator" tabindex="0">
             <div class="calc-display" id="calcDisplay">0</div>
 
             <div class="calc-buttons">
 
                 <!-- TOP ROW -->
-                <button class="calc-btn clear" data-action="clear">C</button>
-                <button class="calc-btn operator" data-action="delete">⌫</button>
-                <button class="calc-btn operator" data-action="(">(</button>
-                <button class="calc-btn operator" data-action=")">)</button>
+                <button class="calc-btn clear" data-action="clear" tabindex="-1">C</button>
+                <button class="calc-btn operator" data-action="delete" tabindex="-1">⌫</button>
+                <button class="calc-btn operator" data-action="(" tabindex="-1">(</button>
+                <button class="calc-btn operator" data-action=")" tabindex="-1">)</button>
 
                 <!-- SCIENTIFIC -->
-                <button class="calc-btn operator" data-action="sin">sin</button>
-                <button class="calc-btn operator" data-action="cos">cos</button>
-                <button class="calc-btn operator" data-action="tan">tan</button>
-                <button class="calc-btn operator" data-action="sqrt">√</button>
+                <button class="calc-btn operator" data-action="sin" tabindex="-1">sin</button>
+                <button class="calc-btn operator" data-action="cos" tabindex="-1">cos</button>
+                <button class="calc-btn operator" data-action="tan" tabindex="-1">tan</button>
+                <button class="calc-btn operator" data-action="sqrt" tabindex="-1">√</button>
 
-                <button class="calc-btn operator" data-action="square">x²</button>
-                <button class="calc-btn operator" data-action="inv">1/x</button>
-                <button class="calc-btn operator" data-action="^">xʸ</button>
-                <button class="calc-btn operator" data-action="/">÷</button>
+                <button class="calc-btn operator" data-action="square" tabindex="-1">x²</button>
+                <button class="calc-btn operator" data-action="inv" tabindex="-1">1/x</button>
+                <button class="calc-btn operator" data-action="^" tabindex="-1">xʸ</button>
+                <button class="calc-btn operator" data-action="/" tabindex="-1">÷</button>
 
                 <!-- NUMBERS -->
-                <button class="calc-btn number" data-value="7">7</button>
-                <button class="calc-btn number" data-value="8">8</button>
-                <button class="calc-btn number" data-value="9">9</button>
-                <button class="calc-btn operator" data-action="*">×</button>
+                <button class="calc-btn number" data-value="7" tabindex="-1">7</button>
+                <button class="calc-btn number" data-value="8" tabindex="-1">8</button>
+                <button class="calc-btn number" data-value="9" tabindex="-1">9</button>
+                <button class="calc-btn operator" data-action="*" tabindex="-1">×</button>
 
-                <button class="calc-btn number" data-value="4">4</button>
-                <button class="calc-btn number" data-value="5">5</button>
-                <button class="calc-btn number" data-value="6">6</button>
-                <button class="calc-btn operator" data-action="-">−</button>
+                <button class="calc-btn number" data-value="4" tabindex="-1">4</button>
+                <button class="calc-btn number" data-value="5" tabindex="-1">5</button>
+                <button class="calc-btn number" data-value="6" tabindex="-1">6</button>
+                <button class="calc-btn operator" data-action="-" tabindex="-1">−</button>
 
-                <button class="calc-btn number" data-value="1">1</button>
-                <button class="calc-btn number" data-value="2">2</button>
-                <button class="calc-btn number" data-value="3">3</button>
-                <button class="calc-btn operator" data-action="+">+</button>
+                <button class="calc-btn number" data-value="1" tabindex="-1">1</button>
+                <button class="calc-btn number" data-value="2" tabindex="-1">2</button>
+                <button class="calc-btn number" data-value="3" tabindex="-1">3</button>
+                <button class="calc-btn operator" data-action="+" tabindex="-1">+</button>
 
-                <button class="calc-btn number span-2" data-value="0">0</button>
-                <button class="calc-btn number" data-value=".">.</button>
-                <button class="calc-btn equals" data-action="=">=</button>
+                <button class="calc-btn number span-2" data-value="0" tabindex="-1">0</button>
+                <button class="calc-btn number" data-value="." tabindex="-1">.</button>
+                <button class="calc-btn equals" data-action="=" tabindex="-1">=</button>
 
             </div>
         </div>
@@ -207,25 +207,59 @@ function initCalculator() {
                 default:
                     expression += action;
             }
-
             update();
         });
     });
 
     document.addEventListener("keydown", (e) => {
 
-        if (!isNaN(e.key) || e.key === ".") expression += e.key;
-
-        if (["+", "-", "*", "/"].includes(e.key)) expression += e.key;
-
-        if (e.key === "^") expression += "^";
-
-        if (e.key === "Enter") expression = safeEval(expression);
-
-        if (e.key === "Backspace") expression = expression.slice(0, -1);
-
+        const key=e.key;
+        if(!document.getElementById("calcDisplay")) return;
+        if(key==="Enter" ||
+           key==="Backspace" ||
+           key==="Escape" ||
+           key==="=" ||
+           ["+","-","*","/","^",".","(",")"].includes(key) ||
+           /^[0-9]$/.test(key)
+        ) {
+            e.preventDefault()
+        }
+        if(/^[0-9]$/.test(key)){
+            expression+=key;
+        }
+        else if(key==="."){
+            expression+=".";
+        }
+        else if(["+","-","*","/"].includes(key)){
+            expression+=key;
+        }
+        else if(key===")" || key==="("){
+            expression+=key;
+        }
+        else if(key==="^"){
+            expression+="^";
+        }
+        else if(key==="Enter" || key==="="){
+            expression=safeEval(expression);
+        }
+        else if(key==="Backspace"){
+            expression=expression.slice(0,-1);
+        }
+        else if(key==="Escape" || key.toLowerCase()==="c"){
+            expression="";
+        }
         update();
-    });
+        // if (!isNaN(e.key) || e.key === ".") expression += e.key;
 
+        // if (["+", "-", "*", "/"].includes(e.key)) expression += e.key;
+
+        // if (e.key === "^") expression += "^";
+
+        // if (e.key === "Enter") expression = safeEval(expression);
+
+        // if (e.key === "Backspace") expression = expression.slice(0, -1);
+
+    });
+    
     update();
 }

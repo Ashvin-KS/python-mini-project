@@ -1323,29 +1323,29 @@ function getCalculatorHTML() {
             <div class="calculator">
                 <div class="calc-display" id="calcDisplay">0</div>
                 <div class="calc-buttons">
-                    <button class="calc-btn clear" data-action="clear">C</button>
-                    <button class="calc-btn operator" data-action="delete">⌫</button>
-                    <button class="calc-btn operator" data-action="/">/</button>
-                    <button class="calc-btn operator" data-action="*">×</button>
+                    <button class="calc-btn clear" data-action="clear" tabindex="-1">C</button>
+                    <button class="calc-btn operator" data-action="delete" tabindex="-1">⌫</button>
+                    <button class="calc-btn operator" data-action="/" tabindex="-1">/</button>
+                    <button class="calc-btn operator" data-action="*" tabindex="-1">×</button>
                     
-                    <button class="calc-btn number" data-value="7">7</button>
-                    <button class="calc-btn number" data-value="8">8</button>
-                    <button class="calc-btn number" data-value="9">9</button>
-                    <button class="calc-btn operator" data-action="-">−</button>
+                    <button class="calc-btn number" data-value="7" tabindex="-1">7</button>
+                    <button class="calc-btn number" data-value="8" tabindex="-1">8</button>
+                    <button class="calc-btn number" data-value="9" tabindex="-1">9</button>
+                    <button class="calc-btn operator" data-action="-" tabindex="-1">−</button>
                     
-                    <button class="calc-btn number" data-value="4">4</button>
-                    <button class="calc-btn number" data-value="5">5</button>
-                    <button class="calc-btn number" data-value="6">6</button>
-                    <button class="calc-btn operator" data-action="+">+</button>
+                    <button class="calc-btn number" data-value="4" tabindex="-1">4</button>
+                    <button class="calc-btn number" data-value="5" tabindex="-1">5</button>
+                    <button class="calc-btn number" data-value="6" tabindex="-1">6</button>
+                    <button class="calc-btn operator" data-action="+" tabindex="-1">+</button>
                     
-                    <button class="calc-btn number" data-value="1">1</button>
-                    <button class="calc-btn number" data-value="2">2</button>
-                    <button class="calc-btn number" data-value="3">3</button>
-                    <button class="calc-btn operator" data-action="**">^</button>
+                    <button class="calc-btn number" data-value="1" tabindex="-1">1</button>
+                    <button class="calc-btn number" data-value="2" tabindex="-1">2</button>
+                    <button class="calc-btn number" data-value="3" tabindex="-1">3</button>
+                    <button class="calc-btn operator" data-action="**" tabindex="-1">^</button>
                     
-                    <button class="calc-btn number span-2" data-value="0">0</button>
-                    <button class="calc-btn number" data-value=".">.</button>
-                    <button class="calc-btn equals" data-action="=">=</button>
+                    <button class="calc-btn number span-2" data-value="0" tabindex="-1">0</button>
+                    <button class="calc-btn number" data-value="." tabindex="-1">.</button>
+                    <button class="calc-btn equals" data-action="=" tabindex="-1">=</button>
                 </div>
             </div>
         </div>
@@ -1421,7 +1421,7 @@ function getCalculatorHTML() {
         </style>
     `;
 }
-
+let calculatorKeyboardAdded = false;
 function initCalculator() {
     const display = document.getElementById('calcDisplay');
     let currentValue = '0';
@@ -1442,7 +1442,59 @@ function initCalculator() {
             updateDisplay();
         });
     });
-    
+   if (!calculatorKeyboardAdded) {
+    document.addEventListener("keydown", (e) => {
+        const display = document.getElementById("calcDisplay");
+        if (!display) return;
+
+        const key = e.key;
+
+        if (
+            key === "Enter" ||
+            key === " " ||
+            key === "Backspace" ||
+            key === "Escape" ||
+            key === "=" ||
+            key === "+" ||
+            key === "-" ||
+            key === "*" ||
+            key === "/" ||
+            key === "^" ||
+            key === "." ||
+            /^[0-9]$/.test(key) ||
+            key.startsWith("Arrow")
+        ) {
+            e.preventDefault();
+        }
+
+        if (/^[0-9]$/.test(key)) {
+            handleNumber(key);
+        } 
+        else if (key === ".") {
+            handleNumber(".");
+        } 
+        else if (["+", "-", "*", "/"].includes(key)) {
+            handleAction(key);
+        } 
+        else if (key === "^") {
+            handleAction("**");
+        } 
+        else if (key === "Enter" || key === "=") {
+            handleAction("=");
+        } 
+        else if (key === "Backspace") {
+            handleAction("delete");
+        } 
+        else if (key === "Escape" || key.toLowerCase() === "c") {
+            handleAction("clear");
+        }
+
+        updateDisplay();
+    });
+
+    calculatorKeyboardAdded = true;
+}
+
     function handleNumber(num) {
         if (currentValue === '0' || currentValue === 'Error') {
             currentValue = num;
@@ -1494,8 +1546,11 @@ function initCalculator() {
     }
     
     function updateDisplay() {
+    const display = document.getElementById('calcDisplay');
+    if (display) {
         display.textContent = currentValue;
     }
+}
 }
 
 // ============================================
