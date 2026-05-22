@@ -257,7 +257,7 @@ function getTypingSpeedTesterHTML() {
         inputElement.value = "";
         inputElement.disabled = false;
         inputElement.removeAttribute("aria-disabled");
-        inputElement.focus();
+        inputElement.focus({ preventScroll: true });
 
         result.innerHTML = "";
         startTime = Date.now();
@@ -733,7 +733,7 @@ resultDetails.innerHTML = `
         requestAnimationFrame(() => sentenceElement.classList.remove('sentence-loading'));
         inputElement.value = '';
         inputElement.disabled = false;
-        inputElement.focus();
+        inputElement.focus({ preventScroll: true });
         if (startSession && !sessionStarted) {
             sessionStarted = true;
             startTime = Date.now();
@@ -743,9 +743,6 @@ resultDetails.innerHTML = `
         // ensure pending state
         const spans = sentenceElement.querySelectorAll('span');
         spans.forEach(s => s.className = 'pending');
-        if (inputElement.scrollIntoView) {
-            inputElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
     }
 
     function setDifficulty(mode, { resetGame = false } = {}) {

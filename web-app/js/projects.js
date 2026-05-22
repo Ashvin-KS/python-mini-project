@@ -1,4 +1,4 @@
-﻿// Project Registry
+// Project Registry
 // Each project's HTML and logic lives in its own file under js/projects/
 
 function getProjectHTML(projectName) {
@@ -2091,7 +2091,7 @@ function initCollatz() {
         const yScale = graphHeight / maxValue;
         
         // Draw axes
-        ctx.strokeStyle = 'var(--text-secondary)';
+        ctx.strokeStyle = '#64748b';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(padding, padding);

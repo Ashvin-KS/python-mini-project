@@ -609,8 +609,72 @@
 
         @media (max-width: 768px) {
             .navbar { padding: 10px 8px; }
-            .nav-island { height: 64px; padding: 0 16px; border-radius: 16px; }
-            .mobile-menu-toggle { display: flex; z-index: 1100; }
+            .nav-island { height: auto; padding: 0.8rem 1.15rem; border-radius: 20px; }
+
+            .nav-wrapper {
+                flex-wrap: wrap;
+                justify-content: space-between;
+                border-radius: 28px;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .navbar-brand {
+                order: 1;
+            }
+
+            .nav-controls {
+                order: 2;
+                position: static;
+                width: auto;
+                height: auto;
+                background: transparent;
+                border: none;
+                padding: 0;
+                flex-direction: row;
+                justify-content: flex-end;
+                gap: 10px;
+                z-index: auto;
+                transition: none;
+            }
+            [data-theme="light"] .nav-controls {
+                background: transparent;
+                border: none;
+            }
+
+            .sound-toggle, .theme-toggle { 
+                width: 42px; 
+                height: 42px; 
+                border-radius: 12px; 
+            }
+
+            .container1 {
+                order: 3;
+                width: 100%;
+                min-width: 0;
+                margin-top: 0.5rem;
+            }
+
+            .hero-features {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                width: 100%;
+                justify-content: flex-start;
+                gap: 0.6rem;
+                padding-bottom: 4px;
+                margin-bottom: 0;
+            }
+            .hero-features::-webkit-scrollbar {
+                display: none;
+            }
+            .hero-features .feature-badge {
+                flex-shrink: 0;
+                padding: 0.5rem 0.9rem;
+                font-size: 0.85rem;
+            }
 
             .search-box {
                 position: absolute;
@@ -627,29 +691,6 @@
                 background: #ffffff;
                 border-color: rgba(0,0,0,0.08);
             }
-
-            .nav-controls {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 260px;
-                height: 100vh;
-                background: #071227;
-                border-left: 1px solid rgba(255, 255, 255, 0.08);
-                flex-direction: column;
-                justify-content: center;
-                gap: 20px;
-                padding: 2rem;
-                z-index: 1050;
-                transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            [data-theme="light"] .nav-controls {
-                background: #ffffff;
-                border-left: 1px solid rgba(0,0,0,0.06);
-            }
-
-            .nav-controls.mobile-active { right: 0; }
-            .sound-toggle, .theme-toggle { width: 50px; height: 50px; border-radius: 14px; }
         }
 
         /* ── Reduced-motion overrides for playground ────────────────── */
@@ -859,6 +900,7 @@
     </button>
 </div>
 
+</div>
 </nav>
 <!-- CENTER SEARCH -->
  <div class="search-box-container">

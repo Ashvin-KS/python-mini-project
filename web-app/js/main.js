@@ -648,6 +648,99 @@ if (stickyFilterBar && heroSection) {
 
     renderRecentSearches();
 
+    // ── Central Dynamic Auto-Scaling (ResizeObserver) ─────────────────
+    var modalResizeObserver = null;
+
+    function applyModalScaling() {
+        var modalContent = document.querySelector('.modal-content');
+        var modalBody = document.getElementById('modalBody');
+        if (!modalContent || !modalBody) return;
+
+        // Reset scroll position to top to avoid viewport clippings during calculations
+        modalContent.scrollTop = 0;
+        modalBody.scrollTop = 0;
+
+        // Hide scrollbars on the container
+        modalContent.style.overflow = 'hidden';
+
+        // Reset inline styles to capture natural dimensions
+        modalBody.style.transform = '';
+        modalBody.style.transformOrigin = '';
+        modalBody.style.width = '';
+        modalBody.style.height = '';
+
+        var targetEl = Array.from(modalBody.children).find(function (el) {
+            return el.tagName.toLowerCase() !== 'style';
+        }) || modalBody.firstElementChild;
+        if (!targetEl) return;
+
+        targetEl.style.transform = '';
+        targetEl.style.transformOrigin = '';
+
+        var computedStyle = window.getComputedStyle(modalContent);
+        var paddingTop = parseFloat(computedStyle.paddingTop) || 32;
+        var paddingBottom = parseFloat(computedStyle.paddingBottom) || 32;
+        var paddingLeft = parseFloat(computedStyle.paddingLeft) || 32;
+        var paddingRight = parseFloat(computedStyle.paddingRight) || 32;
+
+        var availableHeight = modalContent.clientHeight - paddingTop - paddingBottom;
+        var availableWidth = modalContent.clientWidth - paddingLeft - paddingRight;
+
+        var contentHeight = targetEl.scrollHeight;
+        var contentWidth = targetEl.scrollWidth;
+
+        if (contentHeight <= 0 || contentWidth <= 0) return;
+
+        var zoom = 1;
+        var heightZoom = availableHeight / contentHeight;
+        var widthZoom = availableWidth / contentWidth;
+
+        zoom = Math.min(heightZoom, widthZoom);
+        if (zoom > 1) {
+            zoom = 1;
+        }
+
+        // Apply scale transform and origins
+        targetEl.style.transform = 'scale(' + zoom + ')';
+        targetEl.style.transformOrigin = 'top center';
+
+        // Constrain wrapper block size to prevent scroll triggering
+        modalBody.style.height = (contentHeight * zoom) + 'px';
+        modalBody.style.width = '100%';
+        modalBody.style.display = 'flex';
+        modalBody.style.flexDirection = 'column';
+        modalBody.style.alignItems = 'center';
+    }
+
+    function initModalScaling() {
+        applyModalScaling();
+
+        if (modalResizeObserver) {
+            modalResizeObserver.disconnect();
+        }
+
+        var modalBody = document.getElementById('modalBody');
+        var targetEl = modalBody ? Array.from(modalBody.children).find(function (el) {
+            return el.tagName.toLowerCase() !== 'style';
+        }) || modalBody.firstElementChild : null;
+        if (targetEl) {
+            modalResizeObserver = new ResizeObserver(function () {
+                requestAnimationFrame(applyModalScaling);
+            });
+            modalResizeObserver.observe(targetEl);
+        }
+
+        window.addEventListener('resize', applyModalScaling);
+    }
+
+    function destroyModalScaling() {
+        if (modalResizeObserver) {
+            modalResizeObserver.disconnect();
+            modalResizeObserver = null;
+        }
+        window.removeEventListener('resize', applyModalScaling);
+    }
+
     // ── Focus Trap for Modal ──────────────────────────────────────────
     function getFocusableElements(root) {
         var selector =
@@ -668,9 +761,9 @@ if (stickyFilterBar && heroSection) {
             var first = focusables[0];
             var last = focusables[focusables.length - 1];
             if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault(); last.focus();
+                e.preventDefault(); last.focus({ preventScroll: true });
             } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault(); first.focus();
+                e.preventDefault(); first.focus({ preventScroll: true });
             }
         };
         document.addEventListener('keydown', handler, true);
@@ -710,25 +803,37 @@ if (stickyFilterBar && heroSection) {
             if (typeof initializeProject === 'function') initializeProject(name);
         });
 
+        // Initialize reactive scale calculations
+        initModalScaling();
+
         removeTrap = trapFocus(modal);
         var focusables = getFocusableElements(modalBody);
         var firstFocusable = focusables[0] || modalClose;
         if (firstFocusable && typeof firstFocusable.focus === 'function') {
-            firstFocusable.focus();
+            firstFocusable.focus({ preventScroll: true });
         }
     }
 
     function closeProjectSafe() {
         if (!modal || !modal.classList.contains('active')) return;
+
+        destroyModalScaling();
+
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.paddingRight = '';
         document.body.style.overflow = '';
         setMainInert(false);
         if (removeTrap) { removeTrap(); removeTrap = null; }
-        if (modalBody) modalBody.innerHTML = '';
+        if (modalBody) {
+            modalBody.innerHTML = '';
+            modalBody.style.transform = '';
+            modalBody.style.transformOrigin = '';
+            modalBody.style.width = '';
+            modalBody.style.height = '';
+        }
         if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
-            lastFocusedElement.focus();
+            lastFocusedElement.focus({ preventScroll: true });
         }
         lastFocusedElement = null;
     }

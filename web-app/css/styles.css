@@ -3189,16 +3189,25 @@ body {
     }
 
     .hero-features {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.55rem;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.6rem;
         margin-bottom: 1.5rem;
     }
 
+    .hero-features::-webkit-scrollbar {
+        display: none;
+    }
+
     .feature-badge {
-        width: auto;
-        justify-content: flex-start;
-        padding: 0.15rem 0 0.35rem;
+        flex-shrink: 0;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.85rem;
     }
 
     .btn-explore {
