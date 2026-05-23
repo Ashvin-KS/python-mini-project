@@ -1,4 +1,4 @@
-﻿// Project Registry
+// Project Registry
 // Each project's HTML and logic lives in its own file under js/projects/
 
 
@@ -60,508 +60,12 @@ function getProjectHTML(projectName) {
 // ============================================
 // DICE ROLLING
 // ============================================
-function getDiceRollingHTML() {
-    return `
-        <div class="project-content">
-            <h2>🎲 Dice Rolling</h2>
-            <div class="dice-container">
-                <div class="dice-display">
-                    <div class="dice-scene">
-                        <div class="dice-cube" id="dice1">
-                            <div class="cube-face face-1"></div>
-                            <div class="cube-face face-2"></div>
-                            <div class="cube-face face-3"></div>
-                            <div class="cube-face face-4"></div>
-                            <div class="cube-face face-5"></div>
-                            <div class="cube-face face-6"></div>
-                        </div>
-                        <div class="dice-shadow"></div>
-                    </div>
-
-                    <div class="dice-scene">
-                        <div class="dice-cube" id="dice2">
-                            <div class="cube-face face-1"></div>
-                            <div class="cube-face face-2"></div>
-                            <div class="cube-face face-3"></div>
-                            <div class="cube-face face-4"></div>
-                            <div class="cube-face face-5"></div>
-                            <div class="cube-face face-6"></div>
-                        </div>
-                        <div class="dice-shadow"></div>
-                    </div>
-                </div>
-                
-                <div class="dice-total">
-                    <span>Total: </span>
-                    <span id="diceTotal">2</span>
-                </div>
-                
-                <button class="btn-roll" id="rollDice">🎲 Roll Dice</button>
-            </div>
-        </div>
-        
-        <style>
-            .dice-container {
-                text-align: center;
-                padding: 3rem 2rem;
-            }
-            
-            .dice-display {
-                display: flex;
-                gap: 2rem;
-                justify-content: center;
-                margin-bottom: 2rem;
-                flex-wrap: wrap;
-            }
-
-            .dice-scene {
-                position: relative;
-                width: 120px;
-                height: 150px;
-                perspective: 700px;
-                transform-origin: center bottom;
-            }
-            
-            .dice-cube {
-                --rx: 0deg;
-                --ry: 0deg;
-                width: 120px;
-                height: 120px;
-                position: relative;
-                transform-style: preserve-3d;
-                transform: rotateX(var(--rx)) rotateY(var(--ry));
-                transition: transform 1.3s cubic-bezier(0.2, 0.75, 0.15, 1), filter 0.3s ease;
-            }
-
-            .dice-shadow {
-                position: absolute;
-                left: 50%;
-                bottom: 6px;
-                width: 78px;
-                height: 14px;
-                transform: translateX(-50%);
-                border-radius: 50%;
-                background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.05) 70%, transparent 100%);
-                transition: opacity 0.3s ease;
-            }
-
-            .dice-scene.rolling .dice-shadow {
-                animation: diceShadowFloat 1.3s ease;
-            }
-
-            .dice-scene.impact {
-                animation: diceLanding 0.4s ease-out;
-            }
-
-            .dice-scene.impact .dice-shadow {
-                animation: diceShadowImpact 0.4s ease-out;
-            }
-            
-            .cube-face {
-                --size: 120px;
-                --dot: 14px;
-                position: absolute;
-                width: var(--size);
-                height: var(--size);
-                border-radius: 18px;
-                background: linear-gradient(160deg, #ffffff, #e6ebf2);
-                border: 2px solid #d8dee8;
-                box-shadow: inset -8px -8px 12px rgba(0, 0, 0, 0.08), inset 8px 8px 12px rgba(255, 255, 255, 0.85);
-            }
-
-            .cube-face::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                border-radius: 18px;
-                background-repeat: no-repeat;
-            }
-
-            .face-1 { transform: translateZ(60px); }
-            .face-2 { transform: rotateY(90deg) translateZ(60px); }
-            .face-3 { transform: rotateY(180deg) translateZ(60px); }
-            .face-4 { transform: rotateY(-90deg) translateZ(60px); }
-            .face-5 { transform: rotateX(90deg) translateZ(60px); }
-            .face-6 { transform: rotateX(-90deg) translateZ(60px); }
-
-            .face-1::before {
-                background-image: radial-gradient(circle at 50% 50%, #111 0 var(--dot), transparent calc(var(--dot) + 1px));
-            }
-
-            .face-2::before {
-                background-image:
-                    radial-gradient(circle at 28% 28%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 72%, #111 0 var(--dot), transparent calc(var(--dot) + 1px));
-            }
-
-            .face-3::before {
-                background-image:
-                    radial-gradient(circle at 28% 28%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 50% 50%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 72%, #111 0 var(--dot), transparent calc(var(--dot) + 1px));
-            }
-
-            .face-4::before {
-                background-image:
-                    radial-gradient(circle at 28% 28%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 28%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 28% 72%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 72%, #111 0 var(--dot), transparent calc(var(--dot) + 1px));
-            }
-
-            .face-5::before {
-                background-image:
-                    radial-gradient(circle at 28% 28%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 28%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 50% 50%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 28% 72%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 72%, #111 0 var(--dot), transparent calc(var(--dot) + 1px));
-            }
-
-            .face-6::before {
-                background-image:
-                    radial-gradient(circle at 28% 24%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 24%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 28% 50%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 50%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 28% 76%, #111 0 var(--dot), transparent calc(var(--dot) + 1px)),
-                    radial-gradient(circle at 72% 76%, #111 0 var(--dot), transparent calc(var(--dot) + 1px));
-            }
-            
-            .dice-total {
-                font-size: 2rem;
-                margin: 2rem 0;
-                font-weight: bold;
-            }
-            
-            .btn-roll {
-                background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-                color: white;
-                border: none;
-                padding: 1rem 3rem;
-                border-radius: 50px;
-                font-size: 1.3rem;
-                cursor: pointer;
-                transition: var(--transition);
-            }
-            
-            .btn-roll:hover {
-                transform: scale(1.05);
-                box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-            }
-
-            @keyframes diceLanding {
-                0% { transform: translateY(-10px); }
-                55% { transform: translateY(4px); }
-                80% { transform: translateY(-2px); }
-                100% { transform: translateY(0); }
-            }
-
-            @keyframes diceShadowFloat {
-                0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.32; }
-                45% { transform: translateX(-50%) scale(0.72); opacity: 0.2; }
-            }
-
-            @keyframes diceShadowImpact {
-                0% { transform: translateX(-50%) scale(0.74); opacity: 0.2; }
-                55% { transform: translateX(-50%) scale(1.08); opacity: 0.38; }
-                100% { transform: translateX(-50%) scale(1); opacity: 0.32; }
-            }
-        </style>
-    `;
-}
-
-function initDiceRolling() {
-    const dice1 = document.getElementById('dice1');
-    const dice2 = document.getElementById('dice2');
-    const diceScene1 = dice1.closest('.dice-scene');
-    const diceScene2 = dice2.closest('.dice-scene');
-    const rollBtn = document.getElementById('rollDice');
-    const totalDisplay = document.getElementById('diceTotal');
-
-    const faceRotation = {
-        1: { x: 0, y: 0 },
-        2: { x: 0, y: -90 },
-        3: { x: 0, y: 180 },
-        4: { x: 0, y: 90 },
-        5: { x: -90, y: 0 },
-        6: { x: 90, y: 0 }
-    };
-
-    let spins1 = 0;
-    let spins2 = 0;
-
-    function setCubeFace(cube, value, spinSeed) {
-        const target = faceRotation[value];
-        const rx = target.x + 360 * (2 + (spinSeed % 3));
-        const ry = target.y + 360 * (3 + (spinSeed % 2));
-        cube.style.setProperty('--rx', `${rx}deg`);
-        cube.style.setProperty('--ry', `${ry}deg`);
-    }
-
-    function triggerLanding(scene) {
-        scene.classList.remove('impact');
-        void scene.offsetWidth;
-        scene.classList.add('impact');
-        setTimeout(() => {
-            scene.classList.remove('impact');
-        }, 420);
-    }
-
-    setCubeFace(dice1, 1, 0);
-    setCubeFace(dice2, 1, 1);
-    totalDisplay.textContent = '2';
-    
-    rollBtn.addEventListener('click', () => {
-        rollBtn.disabled = true;
-        diceScene1.classList.add('rolling');
-        diceScene2.classList.add('rolling');
-
-        const value1 = Math.floor(Math.random() * 6) + 1;
-        const value2 = Math.floor(Math.random() * 6) + 1;
-        spins1 += 1;
-        spins2 += 1;
-
-        setCubeFace(dice1, value1, spins1);
-        setCubeFace(dice2, value2, spins2);
-
-        setTimeout(() => {
-            diceScene1.classList.remove('rolling');
-            diceScene2.classList.remove('rolling');
-            triggerLanding(diceScene1);
-            triggerLanding(diceScene2);
-            totalDisplay.textContent = value1 + value2;
-            rollBtn.disabled = false;
-        }, 1300);
-    });
-}
+// Moved to js/projects/dice-rolling.js
 
 // ============================================
 // COIN FLIP
 // ============================================
-function getCoinFlipHTML() {
-    return `
-        <div class="project-content">
-            <h2>🪙 Coin Flip</h2>
-            <div class="coin-container">
-                <div class="coin-scene">
-                    <div class="coin" id="coin">
-                        <div class="coin-face heads">👑</div>
-                        <div class="coin-edge"></div>
-                        <div class="coin-face tails">🦅</div>
-                    </div>
-                    <div class="coin-shadow"></div>
-                </div>
-                
-                <div class="coin-result" id="coinResult">Click to Flip!</div>
-                
-                <button class="btn-flip" id="flipCoin">Flip Coin</button>
-                
-                <div class="coin-stats">
-                    <div class="stat-item">
-                        <span>Heads:</span>
-                        <span id="headsCount">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Tails:</span>
-                        <span id="tailsCount">0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <style>
-            .coin-container {
-                text-align: center;
-                padding: 3rem 2rem;
-            }
-
-            .coin-scene {
-                position: relative;
-                width: 170px;
-                height: 205px;
-                perspective: 900px;
-                margin: 1rem auto 2rem;
-                transform-origin: center bottom;
-            }
-            
-            .coin {
-                --flip-x: 0deg;
-                --flip-y: 0deg;
-                width: 170px;
-                height: 170px;
-                position: relative;
-                transform-style: preserve-3d;
-                transform: rotateX(var(--flip-x)) rotateY(var(--flip-y));
-                transition: transform 1.6s cubic-bezier(0.2, 0.8, 0.15, 1);
-            }
-            
-            .coin-face {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                backface-visibility: hidden;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 6rem;
-                background: radial-gradient(circle at 35% 30%, #fff5a6, #ffd54f 45%, #e1a600 100%);
-                border-radius: 50%;
-                border: 5px solid #d79e00;
-                box-shadow: inset -6px -8px 10px rgba(0, 0, 0, 0.22), inset 6px 8px 12px rgba(255, 255, 255, 0.45), 0 12px 25px rgba(0, 0, 0, 0.35);
-            }
-
-            .heads { transform: translateZ(8px); }
-            
-            .tails {
-                transform: rotateY(180deg) translateZ(8px);
-            }
-
-            .coin-edge {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border-radius: 50%;
-                border: 8px solid #b8860b;
-                transform: translateZ(0);
-                box-shadow: inset 0 0 0 2px rgba(255, 232, 145, 0.35);
-            }
-
-            .coin-shadow {
-                position: absolute;
-                left: 50%;
-                bottom: 6px;
-                width: 110px;
-                height: 16px;
-                transform: translateX(-50%);
-                border-radius: 50%;
-                background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.08) 72%, transparent 100%);
-            }
-
-            .coin-scene.rolling .coin-shadow {
-                animation: coinShadowFloat 1.6s ease;
-            }
-
-            .coin-scene.impact {
-                animation: coinLanding 0.45s ease-out;
-            }
-
-            .coin-scene.impact .coin-shadow {
-                animation: coinShadowImpact 0.45s ease-out;
-            }
-            
-            .coin-result {
-                font-size: 2rem;
-                font-weight: bold;
-                margin: 2rem 0;
-                min-height: 3rem;
-            }
-            
-            .btn-flip {
-                background: linear-gradient(135deg, #ffd700, #ffed4e);
-                color: #333;
-                border: none;
-                padding: 1rem 3rem;
-                border-radius: 50px;
-                font-size: 1.3rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: var(--transition);
-            }
-            
-            .btn-flip:hover {
-                transform: scale(1.05);
-                box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-            }
-            
-            .coin-stats {
-                display: flex;
-                gap: 3rem;
-                justify-content: center;
-                margin-top: 2rem;
-                font-size: 1.2rem;
-            }
-            
-            .stat-item {
-                display: flex;
-                gap: 1rem;
-                align-items: center;
-            }
-
-            @keyframes coinLanding {
-                0% { transform: translateY(-12px); }
-                55% { transform: translateY(5px); }
-                82% { transform: translateY(-2px); }
-                100% { transform: translateY(0); }
-            }
-
-            @keyframes coinShadowFloat {
-                0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
-                45% { transform: translateX(-50%) scale(0.68); opacity: 0.2; }
-            }
-
-            @keyframes coinShadowImpact {
-                0% { transform: translateX(-50%) scale(0.72); opacity: 0.2; }
-                55% { transform: translateX(-50%) scale(1.12); opacity: 0.44; }
-                100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
-            }
-        </style>
-    `;
-}
-
-function initCoinFlip() {
-    const coin = document.getElementById('coin');
-    const coinScene = coin.closest('.coin-scene');
-    const flipBtn = document.getElementById('flipCoin');
-    const result = document.getElementById('coinResult');
-    const headsCountEl = document.getElementById('headsCount');
-    const tailsCountEl = document.getElementById('tailsCount');
-    let headsCount = 0;
-    let tailsCount = 0;
-    let spinCount = 0;
-
-    function setCoinFace(isHeads, seed) {
-        const targetY = isHeads ? 0 : 180;
-        const flipX = 360 * (4 + (seed % 3));
-        const flipY = 360 * (3 + (seed % 2)) + targetY;
-        coin.style.setProperty('--flip-x', `${flipX}deg`);
-        coin.style.setProperty('--flip-y', `${flipY}deg`);
-    }
-
-    function triggerCoinLanding() {
-        coinScene.classList.remove('impact');
-        void coinScene.offsetWidth;
-        coinScene.classList.add('impact');
-        setTimeout(() => {
-            coinScene.classList.remove('impact');
-        }, 460);
-    }
-    
-    flipBtn.addEventListener('click', () => {
-        flipBtn.disabled = true;
-        result.textContent = 'Flipping...';
-        coinScene.classList.add('rolling');
-        
-        const isHeads = Math.random() < 0.5;
-        spinCount += 1;
-        setCoinFace(isHeads, spinCount);
-        
-        setTimeout(() => {
-            coinScene.classList.remove('rolling');
-            triggerCoinLanding();
-            if (isHeads) {
-                result.textContent = '👑 Heads!';
-                headsCount++;
-                headsCountEl.textContent = headsCount;
-            } else {
-                result.textContent = '🦅 Tails!';
-                tailsCount++;
-                tailsCountEl.textContent = tailsCount;
-            }
-            flipBtn.disabled = false;
-        }, 1600);
-    });
-}
+// (Coin Flip HTML & Logic loaded from modular file js/projects/coin-flip.js)
 
 // Continue with more projects in next message...
 // Additional Project Implementations
@@ -1097,29 +601,29 @@ function getCalculatorHTML() {
             <div class="calculator">
                 <div class="calc-display" id="calcDisplay">0</div>
                 <div class="calc-buttons">
-                    <button class="calc-btn clear" data-action="clear">C</button>
-                    <button class="calc-btn operator" data-action="delete">⌫</button>
-                    <button class="calc-btn operator" data-action="/">/</button>
-                    <button class="calc-btn operator" data-action="*">×</button>
+                    <button class="calc-btn clear" data-action="clear" tabindex="-1">C</button>
+                    <button class="calc-btn operator" data-action="delete" tabindex="-1">⌫</button>
+                    <button class="calc-btn operator" data-action="/" tabindex="-1">/</button>
+                    <button class="calc-btn operator" data-action="*" tabindex="-1">×</button>
                     
-                    <button class="calc-btn number" data-value="7">7</button>
-                    <button class="calc-btn number" data-value="8">8</button>
-                    <button class="calc-btn number" data-value="9">9</button>
-                    <button class="calc-btn operator" data-action="-">−</button>
+                    <button class="calc-btn number" data-value="7" tabindex="-1">7</button>
+                    <button class="calc-btn number" data-value="8" tabindex="-1">8</button>
+                    <button class="calc-btn number" data-value="9" tabindex="-1">9</button>
+                    <button class="calc-btn operator" data-action="-" tabindex="-1">−</button>
                     
-                    <button class="calc-btn number" data-value="4">4</button>
-                    <button class="calc-btn number" data-value="5">5</button>
-                    <button class="calc-btn number" data-value="6">6</button>
-                    <button class="calc-btn operator" data-action="+">+</button>
+                    <button class="calc-btn number" data-value="4" tabindex="-1">4</button>
+                    <button class="calc-btn number" data-value="5" tabindex="-1">5</button>
+                    <button class="calc-btn number" data-value="6" tabindex="-1">6</button>
+                    <button class="calc-btn operator" data-action="+" tabindex="-1">+</button>
                     
-                    <button class="calc-btn number" data-value="1">1</button>
-                    <button class="calc-btn number" data-value="2">2</button>
-                    <button class="calc-btn number" data-value="3">3</button>
-                    <button class="calc-btn operator" data-action="**">^</button>
+                    <button class="calc-btn number" data-value="1" tabindex="-1">1</button>
+                    <button class="calc-btn number" data-value="2" tabindex="-1">2</button>
+                    <button class="calc-btn number" data-value="3" tabindex="-1">3</button>
+                    <button class="calc-btn operator" data-action="**" tabindex="-1">^</button>
                     
-                    <button class="calc-btn number span-2" data-value="0">0</button>
-                    <button class="calc-btn number" data-value=".">.</button>
-                    <button class="calc-btn equals" data-action="=">=</button>
+                    <button class="calc-btn number span-2" data-value="0" tabindex="-1">0</button>
+                    <button class="calc-btn number" data-value="." tabindex="-1">.</button>
+                    <button class="calc-btn equals" data-action="=" tabindex="-1">=</button>
                 </div>
             </div>
         </div>
@@ -1197,79 +701,167 @@ function getCalculatorHTML() {
 }
 
 function initCalculator() {
-    const display = document.getElementById('calcDisplay');
-    let currentValue = '0';
-    let previousValue = '';
-    let operation = '';
-    
-    document.querySelectorAll('.calc-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const value = btn.getAttribute('data-value');
-            const action = btn.getAttribute('data-action');
-            
-            if (value) {
-                handleNumber(value);
-            } else if (action) {
-                handleAction(action);
+    const display = document.getElementById("calcDisplay");
+    if (!display) return;
+    let expression = "";
+
+    function update() {
+        display.textContent = expression || "0";
+    }
+
+    function format(expr) {
+        return expr
+            .replace(/÷/g, "/")
+            .replace(/×/g, "*")
+            .replace(/\^/g, "**");
+    }
+
+    function safeEval(expr) {
+        try {
+            if (!expr) return "";
+            let result = eval(format(expr));
+            if (result === undefined) return "";
+            if (isNaN(result)) return "Error";
+            return String(result);
+        } catch {
+            return "Error";
+        }
+    }
+
+    function applyFunction(type) {
+        try {
+            let value = eval(format(expression || "0"));
+            let result;
+            switch (type) {
+                case "sin": result = Math.sin(value); break;
+                case "cos": result = Math.cos(value); break;
+                case "tan": result = Math.tan(value); break;
+                case "sqrt": result = Math.sqrt(value); break;
+                case "square": result = value * value; break;
+                case "inv": result = 1 / value; break; 
             }
+            if (isNaN(result)) return "Error"; 
+            return String(result);
+        } catch {
+            return "Error";
+        }
+    }
+
+ 
+    function clearIfFinished() {
+        if (expression === "Error" || expression === "NaN") {
+            expression = "";
+        }
+    }
+
+    document.querySelectorAll(".calc-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            clearIfFinished();
             
-            updateDisplay();
+            const value = btn.dataset.value;
+            const action = btn.dataset.action;
+
+            if (value !== undefined) {
+                if (value === ".") {
+               
+                    const lastOperand = expression.split(/[\+\-\*\/\^\(\)]/).pop();
+                    if (lastOperand.includes(".")) return;
+                }
+                expression += value;
+                update();
+                return;
+            }
+
+            if (!action) return;
+
+    
+            switch (action) {
+                case "clear":
+                    expression = "";
+                    break;
+                case "delete":
+                    if (expression === "Infinity" || expression === "-Infinity") {
+                        expression = "";
+                    } else {
+                        expression = expression.slice(0, -1);
+                    }
+                    break;
+                case "=":
+                    expression = safeEval(expression);
+                    break;
+                case "sin":
+                case "cos":
+                case "tan":
+                case "sqrt":
+                case "square":
+                case "inv":
+                    expression = applyFunction(action);
+                    break;
+                case "^":
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+        
+                    const lastChar = expression.slice(-1);
+                    if (["+", "-", "*", "/", "^"].includes(lastChar)) {
+                        expression = expression.slice(0, -1) + action;
+                    } else {
+                        expression += action;
+                    }
+                    break;
+                default:
+                    expression += action;
+            }
+            update();
         });
     });
-    
-    function handleNumber(num) {
-        if (currentValue === '0' || currentValue === 'Error') {
-            currentValue = num;
+
+    document.addEventListener("keydown", (e) => {
+        const key = e.key;
+        if (!document.getElementById("calcDisplay")) return;
+
+        // Whitelist allowed keys to prevent typing letters
+        const allowedKeys = ["Enter", "Backspace", "Escape", "=", "+", "-", "*", "/", "^", ".", "(", ")"];
+        if (allowedKeys.includes(key) || /^[0-9]$/.test(key)) {
+            e.preventDefault();
         } else {
-            currentValue += num;
+            return;
         }
-    }
-    
-    function handleAction(action) {
-        if (action === 'clear') {
-            currentValue = '0';
-            previousValue = '';
-            operation = '';
-        } else if (action === 'delete') {
-            currentValue = currentValue.slice(0, -1) || '0';
-        } else if (action === '=') {
-            calculate();
-        } else {
-            if (previousValue && operation) {
-                calculate();
+
+        clearIfFinished();
+
+        if (/^[0-9]$/.test(key)) {
+            expression += key;
+        } else if (key === ".") {
+            const lastOperand = expression.split(/[\+\-\*\/\^\(\)]/).pop();
+            if (!lastOperand.includes(".")) {
+                expression += ".";
             }
-            previousValue = currentValue;
-            currentValue = '0';
-            operation = action;
-        }
-    }
-    
-    function calculate() {
-        try {
-            const prev = parseFloat(previousValue);
-            const curr = parseFloat(currentValue);
-            let result;
-            
-            switch (operation) {
-                case '+': result = prev + curr; break;
-                case '-': result = prev - curr; break;
-                case '*': result = prev * curr; break;
-                case '/': result = prev / curr; break;
-                case '**': result = Math.pow(prev, curr); break;
-                default: return;
+        } else if (["+", "-", "*", "/", "^"].includes(key)) {
+            const lastChar = expression.slice(-1);
+            if (["+", "-", "*", "/", "^"].includes(lastChar)) {
+                expression = expression.slice(0, -1) + key;
+            } else {
+                expression += key;
             }
-            
-            currentValue = result.toString();
-            previousValue = '';
-            operation = '';
-        } catch (e) {
-            currentValue = 'Error';
+        } else if (key === ")" || key === "(") {
+            expression += key;
+        } else if (key === "Enter" || key === "=") {
+            expression = safeEval(expression);
+        } else if (key === "Backspace") {
+            if (expression === "Infinity" || expression === "-Infinity") {
+                expression = "";
+            } else {
+                expression = expression.slice(0, -1);
+            }
+        } else if (key === "Escape" || key.toLowerCase() === "c") {
+            expression = "";
         }
-    }
-    
-    function updateDisplay() {
-        display.textContent = currentValue;
-    }
+        update();
+    });
+
+    update();
 }
 
 // ============================================
@@ -1911,15 +1503,15 @@ function initCollatz() {
     generateSequence();
 }
 
-function getArmstrongHTML() { 
+function getArmstrongHTML() {
     return `
         <div class="project-content">
             <h2>💎 Armstrong Number Checker</h2>
             <p class="project-desc">Check if a number equals the sum of its digits raised to the power of the number of digits</p>
             <div class="armstrong-container">
                 <div class="input-section">
-                    <input type="number" id="armstrongNumber" placeholder="Enter a number" min="0">
-                    <button class="btn-check" id="checkArmstrong">💎 Check</button>
+                    <input type="number" class="number-input" id="armstrongNumber" placeholder="Enter a number" min="0">
+                    <button class="btn-primary" id="checkArmstrong">💎 Check</button>
                 </div>
                 
                 <div class="result-display" id="armstrongResult"></div>
@@ -2049,10 +1641,52 @@ function getArmstrongHTML() {
                 border-color: var(--primary-color);
                 transform: translateY(-2px);
             }
+
+            /* --- NEW STANDARDIZED INPUT STYLES --- */
+            .input-section {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+
+            .number-input {
+                width: 60%;
+                padding: 0.8rem 1.2rem;
+                border-radius: 10px;
+                border: 2px solid var(--border-color);
+                font-size: 1.1rem;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                transition: var(--transition);
+            }
+
+            .number-input:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+            }
+
+            .btn-primary {
+                padding: 0.8rem 1.5rem;
+                border: none;
+                border-radius: 10px;
+                background: var(--primary-color);
+                color: white;
+                cursor: pointer;
+                font-size: 1.1rem;
+                font-weight: bold;
+                transition: var(--transition);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
         </style>
     `;
 }
-
 function initArmstrong() {
     const numberInput = document.getElementById('armstrongNumber');
     const checkBtn = document.getElementById('checkArmstrong');
