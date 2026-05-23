@@ -124,7 +124,6 @@ function getCalculatorHTML() {
 function initCalculator() {
     const display = document.getElementById("calcDisplay");
     if (!display) return;
-
     let expression = "";
 
     function update() {
@@ -140,7 +139,11 @@ function initCalculator() {
 
     function safeEval(expr) {
         try {
-            return String(eval(format(expr)));
+            if (!expr) return "";
+            let result = eval(format(expr));
+            if (result === undefined) return "";
+            if (isNaN(result)) return "Error";
+            return String(result);
         } catch {
             return "Error";
         }
@@ -149,27 +152,42 @@ function initCalculator() {
     function applyFunction(type) {
         try {
             let value = eval(format(expression || "0"));
-
+            let result;
             switch (type) {
-                case "sin": return String(Math.sin(value));
-                case "cos": return String(Math.cos(value));
-                case "tan": return String(Math.tan(value));
-                case "sqrt": return String(Math.sqrt(value));
-                case "square": return String(value * value);
-                case "inv": return value === 0 ? "Error" : String(1 / value);
+                case "sin": result = Math.sin(value); break;
+                case "cos": result = Math.cos(value); break;
+                case "tan": result = Math.tan(value); break;
+                case "sqrt": result = Math.sqrt(value); break;
+                case "square": result = value * value; break;
+                case "inv": result = 1 / value; break; 
             }
+            if (isNaN(result)) return "Error"; 
+            return String(result);
         } catch {
             return "Error";
         }
     }
 
-    document.querySelectorAll(".calc-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
+ 
+    function clearIfFinished() {
+        if (expression === "Error" || expression === "NaN") {
+            expression = "";
+        }
+    }
 
+    document.querySelectorAll(".calc-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            clearIfFinished();
+            
             const value = btn.dataset.value;
             const action = btn.dataset.action;
 
             if (value !== undefined) {
+                if (value === ".") {
+               
+                    const lastOperand = expression.split(/[\+\-\*\/\^\(\)]/).pop();
+                    if (lastOperand.includes(".")) return;
+                }
                 expression += value;
                 update();
                 return;
@@ -177,20 +195,21 @@ function initCalculator() {
 
             if (!action) return;
 
+    
             switch (action) {
-
                 case "clear":
                     expression = "";
                     break;
-
                 case "delete":
-                    expression = expression.slice(0, -1);
+                    if (expression === "Infinity" || expression === "-Infinity") {
+                        expression = "";
+                    } else {
+                        expression = expression.slice(0, -1);
+                    }
                     break;
-
                 case "=":
                     expression = safeEval(expression);
                     break;
-
                 case "sin":
                 case "cos":
                 case "tan":
@@ -199,11 +218,19 @@ function initCalculator() {
                 case "inv":
                     expression = applyFunction(action);
                     break;
-
                 case "^":
-                    expression += "^";
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+        
+                    const lastChar = expression.slice(-1);
+                    if (["+", "-", "*", "/", "^"].includes(lastChar)) {
+                        expression = expression.slice(0, -1) + action;
+                    } else {
+                        expression += action;
+                    }
                     break;
-
                 default:
                     expression += action;
             }
@@ -212,54 +239,48 @@ function initCalculator() {
     });
 
     document.addEventListener("keydown", (e) => {
+        const key = e.key;
+        if (!document.getElementById("calcDisplay")) return;
 
-        const key=e.key;
-        if(!document.getElementById("calcDisplay")) return;
-        if(key==="Enter" ||
-           key==="Backspace" ||
-           key==="Escape" ||
-           key==="=" ||
-           ["+","-","*","/","^",".","(",")"].includes(key) ||
-           /^[0-9]$/.test(key)
-        ) {
-            e.preventDefault()
+        // Whitelist allowed keys to prevent typing letters
+        const allowedKeys = ["Enter", "Backspace", "Escape", "=", "+", "-", "*", "/", "^", ".", "(", ")"];
+        if (allowedKeys.includes(key) || /^[0-9]$/.test(key)) {
+            e.preventDefault();
+        } else {
+            return;
         }
-        if(/^[0-9]$/.test(key)){
-            expression+=key;
-        }
-        else if(key==="."){
-            expression+=".";
-        }
-        else if(["+","-","*","/"].includes(key)){
-            expression+=key;
-        }
-        else if(key===")" || key==="("){
-            expression+=key;
-        }
-        else if(key==="^"){
-            expression+="^";
-        }
-        else if(key==="Enter" || key==="="){
-            expression=safeEval(expression);
-        }
-        else if(key==="Backspace"){
-            expression=expression.slice(0,-1);
-        }
-        else if(key==="Escape" || key.toLowerCase()==="c"){
-            expression="";
+
+        clearIfFinished();
+
+        if (/^[0-9]$/.test(key)) {
+            expression += key;
+        } else if (key === ".") {
+            const lastOperand = expression.split(/[\+\-\*\/\^\(\)]/).pop();
+            if (!lastOperand.includes(".")) {
+                expression += ".";
+            }
+        } else if (["+", "-", "*", "/", "^"].includes(key)) {
+            const lastChar = expression.slice(-1);
+            if (["+", "-", "*", "/", "^"].includes(lastChar)) {
+                expression = expression.slice(0, -1) + key;
+            } else {
+                expression += key;
+            }
+        } else if (key === ")" || key === "(") {
+            expression += key;
+        } else if (key === "Enter" || key === "=") {
+            expression = safeEval(expression);
+        } else if (key === "Backspace") {
+            if (expression === "Infinity" || expression === "-Infinity") {
+                expression = "";
+            } else {
+                expression = expression.slice(0, -1);
+            }
+        } else if (key === "Escape" || key.toLowerCase() === "c") {
+            expression = "";
         }
         update();
-        // if (!isNaN(e.key) || e.key === ".") expression += e.key;
-
-        // if (["+", "-", "*", "/"].includes(e.key)) expression += e.key;
-
-        // if (e.key === "^") expression += "^";
-
-        // if (e.key === "Enter") expression = safeEval(expression);
-
-        // if (e.key === "Backspace") expression = expression.slice(0, -1);
-
     });
-    
+
     update();
 }
