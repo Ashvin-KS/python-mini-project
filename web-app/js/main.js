@@ -455,6 +455,44 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.add('sidebar-active');
   }
 
+  /* ── Search Kbd Hint on Sidebar Activation ─────────────────── */
+  var searchKbdHint = document.getElementById('searchKbdHint');
+  var kbdHintTimer;
+
+  function showKbdHint() {
+    if (!searchKbdHint) return;
+    clearTimeout(kbdHintTimer);
+    searchKbdHint.classList.add('visible');
+    kbdHintTimer = setTimeout(function () {
+      searchKbdHint.classList.remove('visible');
+    }, 3000); // auto-dismiss after 3s
+  }
+
+  // Watch for sidebar-active class being added to body
+  var bodyClassObserver = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.attributeName === 'class') {
+        var isActive = document.body.classList.contains('sidebar-active');
+        if (isActive) {
+          showKbdHint();
+        } else {
+          clearTimeout(kbdHintTimer);
+          if (searchKbdHint) searchKbdHint.classList.remove('visible');
+        }
+      }
+    });
+  });
+
+  bodyClassObserver.observe(document.body, { attributes: true });
+
+  // Hide hint when user focuses the search input
+  if (searchInput) {
+    searchInput.addEventListener('focus', function () {
+      clearTimeout(kbdHintTimer);
+      if (searchKbdHint) searchKbdHint.classList.remove('visible');
+    });
+  }
+
   /* ═══════════════════════════════════════════════════════════════
      SEARCH
      ═══════════════════════════════════════════════════════════════ */

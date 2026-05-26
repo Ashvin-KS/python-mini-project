@@ -1,13 +1,17 @@
 import turtle
 import random
 import time
-import pygame
-
 # ================= SOUND =================
+try:
+    import pygame
+    pygame.mixer.init()
+    eat_sound = pygame.mixer.Sound("sounds/eat.wav")
+    gameover_sound = pygame.mixer.Sound("sounds/gameover.wav")
+    pygame_installed = True
+except ImportError:
+    pygame_installed = False
+    print("⚠️ Warning: pygame module not found. Game will run without sound effects.")
 
-pygame.mixer.init()
-eat_sound = pygame.mixer.Sound("sounds/eat.wav")
-gameover_sound = pygame.mixer.Sound("sounds/gameover.wav")
 
 # ================= SCREEN SETUP =================
 
@@ -196,7 +200,8 @@ def move():
 def reset_game():
     global score, level, speed
 
-    gameover_sound.play()
+    if pygame_installed:
+        gameover_sound.play()
 
     time.sleep(1)
 
@@ -234,7 +239,8 @@ while True:
     # Food collision
     if head.distance(food) < GRID_SIZE:
 
-        eat_sound.play()
+        if pygame_installed:
+            eat_sound.play()
 
         score += current_food["points"]
 

@@ -1,4 +1,3 @@
-import pygame
 import turtle
 import time
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, COLLISION_DISTANCE, SLEEP_TIME
@@ -6,6 +5,12 @@ from snake import Snake
 from food import Food
 from scoreboard import Scoreboard
 
+try:
+    import pygame
+    pygame_installed = True
+except ImportError:
+    pygame_installed = False
+    print("⚠️ Warning: pygame module not found. Game will run without sound effects.")
 
 class SnakeGame:
     def __init__(self):
@@ -29,9 +34,15 @@ class SnakeGame:
         self.scoreboard = Scoreboard()
 
         # Sound setup
-        pygame.mixer.init()
-        self.eat_sound = pygame.mixer.Sound("sounds/Apple_Eating.mp3")
-        self.gameover_sound = pygame.mixer.Sound("sounds/Game_over.mp3")
+        self.pygame_installed = pygame_installed
+        if self.pygame_installed:
+            try:
+                pygame.mixer.init()
+                self.eat_sound = pygame.mixer.Sound("sounds/Apple_Eating.mp3")
+                self.gameover_sound = pygame.mixer.Sound("sounds/Game_over.mp3")
+            except Exception as e:
+                print(f"⚠️ Warning: Could not initialize pygame mixer: {e}")
+                self.pygame_installed = False
 
         # Keyboard bindings
         self.screen.listen()
@@ -83,7 +94,8 @@ class SnakeGame:
 
             # Boundary collision
             if self.snake.check_boundary_collision():
-                self.gameover_sound.play()
+                if self.pygame_installed:
+                    self.gameover_sound.play()
                 self.snake.reset()
                 self.scoreboard.reset()
                 self.delay = SLEEP_TIME
@@ -95,7 +107,8 @@ class SnakeGame:
                 self.snake.add_part()
 
                 self.scoreboard.increase()
-                self.eat_sound.play()
+                if self.pygame_installed:
+                    self.eat_sound.play()
 
                 # Level system
                 if self.scoreboard.score % 5 == 0:
@@ -113,7 +126,8 @@ class SnakeGame:
 
             # Self collision
             if self.snake.check_self_collision():
-                self.gameover_sound.play()
+                if self.pygame_installed:
+                    self.gameover_sound.play()
                 self.snake.reset()
                 self.scoreboard.reset()
                 self.delay = SLEEP_TIME

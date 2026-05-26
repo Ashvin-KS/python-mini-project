@@ -125,6 +125,14 @@ while True:
                 candidates.append((-b - sqrt_disc) / (2 * a))
 
     for r in candidates:
+        if abs(r) <= EPS:
+            # If common ratio r = 0, all terms from index 1 onwards must be 0
+            if all(abs(x) <= EPS for x in sequence[1:]):
+                is_agp = True
+                agp_ratio = r
+                break
+            continue
+
         valid = True
         for i in range(2, len(sequence)):
             expected = 2 * r * sequence[i - 1] - (r * r) * sequence[i - 2]

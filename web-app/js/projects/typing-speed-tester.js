@@ -3,12 +3,14 @@ function getTypingSpeedTesterHTML() {
         <style>
             .typing-tester {
                 display: grid;
-                gap: 1rem;
                 min-height: auto;
                 padding: 1rem;
             }
 
             .typing-tester .stage {
+                /* Force all stages to sit in the exact same cell */
+                grid-column: 1 / -1;
+                grid-row: 1 / -1;
                 background: linear-gradient(180deg, rgba(34, 197, 94, 0.06), rgba(15, 23, 42, 0.04));
                 border-radius: 24px;
                 padding: 2rem;
@@ -17,6 +19,7 @@ function getTypingSpeedTesterHTML() {
             }
 
             .typing-tester .stage.hidden {
+                display: none !important; /* Completely removes it from grid flow */
                 opacity: 0;
                 transform: translateY(20px);
                 pointer-events: none;
@@ -448,65 +451,65 @@ function initTypingSpeedTester() {
             "Short words are easier to type.",
             "Practice daily for better speed.",
             "Keep fingers on the home row.",
-            "Every keystroke helps you improve."
+            "Every keystroke helps you improve.",
         ],
         medium: [
             "Learning Python, step by step, becomes easier with practice.",
             "Don't forget to save your progress before closing the editor.",
             "Can you type this sentence accurately within the time limit?",
             "A careful typist checks each sentence for punctuation.",
-            "Mixed capitalization and punctuation demand extra focus."
+            "Mixed capitalization and punctuation demand extra focus.",
         ],
         hard: [
             "Error 404: Resource not found; please retry after 5 seconds.",
             "The function calculate_total(price, tax_rate) returned an unexpected value.",
-            "\"Practice daily,\" said the mentor, \"because consistency matters.\"",
+            '"Practice daily," said the mentor, "because consistency matters."',
             "Use [Ctrl+S] to save changes; then review the output carefully.",
-            "Note: accuracy, speed, and punctuation all matter in this test."
-        ]
+            "Note: accuracy, speed, and punctuation all matter in this test.",
+        ],
     };
 
     const difficultyConfig = {
         easy: { seconds: 60 },
         medium: { seconds: 45 },
-        hard: { seconds: 30 }
+        hard: { seconds: 30 },
     };
 
-    const root = document.querySelector('.typing-tester');
+    const root = document.querySelector(".typing-tester");
     if (!root) return;
-    const startStage = root.querySelector('.stage-start');
-    const gameStage = root.querySelector('.stage-game');
-    const resultStage = root.querySelector('.stage-result');
-    const difficultyButtons = root.querySelectorAll('.mode-btn');
-    const sentenceElement = document.getElementById('typingSentence');
-    const inputElement = document.getElementById('typingInput');
-    const startButton = document.getElementById('startTypingBtn');
-    const startInlineBtn = document.getElementById('startInlineBtn');
-    const newSentenceBtn = document.getElementById('newSentenceBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const timerDisplay = document.getElementById('timerDisplay');
-    const result = document.getElementById('typingResult');
-    const headerWpm = document.getElementById('headerWpm');
-    const headerAccuracy = document.getElementById('headerAccuracy');
-    const headerMistakes = document.getElementById('headerMistakes');
-    const headerDifficulty = document.getElementById('headerDifficulty');
+    const startStage = root.querySelector(".stage-start");
+    const gameStage = root.querySelector(".stage-game");
+    const resultStage = root.querySelector(".stage-result");
+    const difficultyButtons = root.querySelectorAll(".mode-btn");
+    const sentenceElement = document.getElementById("typingSentence");
+    const inputElement = document.getElementById("typingInput");
+    const startButton = document.getElementById("startTypingBtn");
+    const startInlineBtn = document.getElementById("startInlineBtn");
+    const newSentenceBtn = document.getElementById("newSentenceBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const result = document.getElementById("typingResult");
+    const headerWpm = document.getElementById("headerWpm");
+    const headerAccuracy = document.getElementById("headerAccuracy");
+    const headerMistakes = document.getElementById("headerMistakes");
+    const headerDifficulty = document.getElementById("headerDifficulty");
     // stats
-    const statWpm = document.getElementById('statWpm');
-    const statAccuracy = document.getElementById('statAccuracy');
-    const statErrors = document.getElementById('statErrors');
-    const statCorrect = document.getElementById('statCorrect');
-    const statIncorrect = document.getElementById('statIncorrect');
-    const statRemaining = document.getElementById('statRemaining');
-    const statDifficulty = document.getElementById('statDifficulty');
+    const statWpm = document.getElementById("statWpm");
+    const statAccuracy = document.getElementById("statAccuracy");
+    const statErrors = document.getElementById("statErrors");
+    const statCorrect = document.getElementById("statCorrect");
+    const statIncorrect = document.getElementById("statIncorrect");
+    const statRemaining = document.getElementById("statRemaining");
+    const statDifficulty = document.getElementById("statDifficulty");
     // result stage elements
-    const resultSummary = document.getElementById('resultSummary');
-    const resultMessage = document.getElementById('resultMessage');
-    const resultDetails = document.getElementById('resultDetails');
-    const restartBtnEl = document.getElementById('restartBtn');
-    const retryBtnEl = document.getElementById('retryBtn');
+    const resultSummary = document.getElementById("resultSummary");
+    const resultMessage = document.getElementById("resultMessage");
+    const resultDetails = document.getElementById("resultDetails");
+    const restartBtnEl = document.getElementById("restartBtn");
+    const retryBtnEl = document.getElementById("retryBtn");
 
-    let selectedDifficulty = 'easy';
-    let currentSentence = '';
+    let selectedDifficulty = "easy";
+    let currentSentence = "";
     let startTime = null; // will be set on first keystroke
     let timerInterval = null;
     let isRunning = false; // true when timer running
@@ -522,14 +525,22 @@ function initTypingSpeedTester() {
     }
 
     function getSentencePool() {
-        return sentencesByDifficulty[selectedDifficulty] || sentencesByDifficulty.easy;
+        return (
+            sentencesByDifficulty[selectedDifficulty] ||
+            sentencesByDifficulty.easy
+        );
     }
 
     function updateDifficultyDisplay() {
         timerDisplay.textContent = `${difficultyConfig[selectedDifficulty].seconds}s`;
-        if (statRemaining) statRemaining.textContent = `${difficultyConfig[selectedDifficulty].seconds}s`;
-        if (statDifficulty) statDifficulty.textContent = formatDifficultyLabel(selectedDifficulty);
-        if (headerDifficulty) headerDifficulty.textContent = formatDifficultyLabel(selectedDifficulty);
+        if (statRemaining)
+            statRemaining.textContent = `${difficultyConfig[selectedDifficulty].seconds}s`;
+        if (statDifficulty)
+            statDifficulty.textContent =
+                formatDifficultyLabel(selectedDifficulty);
+        if (headerDifficulty)
+            headerDifficulty.textContent =
+                formatDifficultyLabel(selectedDifficulty);
     }
 
     function resetUI() {
@@ -543,25 +554,27 @@ function initTypingSpeedTester() {
         totalTypedChars = 0;
         totalWordsTyped = 0;
         sentencesCompleted = 0;
-        inputElement.value = '';
+        inputElement.value = "";
         inputElement.disabled = true;
         inputElement.blur();
-        renderSentence('Pick a difficulty and start the test.');
+        renderSentence("Pick a difficulty and start the test.");
         // mark pending characters
-        const spans = sentenceElement.querySelectorAll('span');
-        spans.forEach(s => { s.className = 'pending'; });
-        result.textContent = 'Your speed and accuracy will appear here.';
+        const spans = sentenceElement.querySelectorAll("span");
+        spans.forEach((s) => {
+            s.className = "pending";
+        });
+        result.textContent = "Your speed and accuracy will appear here.";
         updateDifficultyDisplay();
-        if (headerWpm) headerWpm.textContent = '0';
-        if (headerAccuracy) headerAccuracy.textContent = '0%';
-        if (headerMistakes) headerMistakes.textContent = '0';
+        if (headerWpm) headerWpm.textContent = "0";
+        if (headerAccuracy) headerAccuracy.textContent = "0%";
+        if (headerMistakes) headerMistakes.textContent = "0";
     }
 
     function renderSentence(sentence) {
         sentenceElement.innerHTML = sentence
-            .split('')
-            .map(char => `<span class="pending">${char}</span>`)
-            .join('');
+            .split("")
+            .map((char) => `<span class="pending">${char}</span>`)
+            .join("");
     }
 
     function stopTimer() {
@@ -578,15 +591,25 @@ function initTypingSpeedTester() {
         inputElement.blur();
 
         const typedText = inputElement.value;
-        const elapsedSeconds = startTime ? Math.min((Date.now() - startTime) / 1000, difficultyConfig[selectedDifficulty].seconds) : 0;
+        const elapsedSeconds = startTime
+            ? Math.min(
+                  (Date.now() - startTime) / 1000,
+                  difficultyConfig[selectedDifficulty].seconds,
+              )
+            : 0;
         const currentStats = calculateMetrics(typedText, currentSentence);
 
         const finalCorrect = totalCorrectChars + currentStats.correct;
         const finalIncorrect = totalIncorrectChars + currentStats.incorrect;
         const finalChars = totalTypedChars + currentStats.chars;
         const finalWords = totalWordsTyped + currentStats.words;
-        const finalWpm = elapsedSeconds > 0 ? Math.round((finalWords / elapsedSeconds) * 60) : 0;
-        const finalAccuracy = finalChars ? Math.round((finalCorrect / finalChars) * 100) : 0;
+        const finalWpm =
+            elapsedSeconds > 0
+                ? Math.round((finalWords / elapsedSeconds) * 60)
+                : 0;
+        const finalAccuracy = finalChars
+            ? Math.round((finalCorrect / finalChars) * 100)
+            : 0;
 
         if (statWpm) statWpm.textContent = finalWpm;
         if (statAccuracy) statAccuracy.textContent = `${finalAccuracy}%`;
@@ -599,10 +622,12 @@ function initTypingSpeedTester() {
         if (headerAccuracy) headerAccuracy.textContent = `${finalAccuracy}%`;
         if (headerMistakes) headerMistakes.textContent = finalIncorrect;
 
-// Remove default margins or native headings completely
-resultMessage.innerHTML = hasTimedOut ? '⏱️ Time is up!' : '🎉 Test completed!';
+        // Remove default margins or native headings completely
+        resultMessage.innerHTML = hasTimedOut
+            ? "⏱️ Time is up!"
+            : "🎉 Test completed!";
 
-resultDetails.innerHTML = `
+        resultDetails.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.2rem;">
         <div><strong>🚀 Final WPM:</strong> ${finalWpm}</div>
         <div><strong>🎯 Accuracy:</strong> ${finalAccuracy}%</div>
@@ -613,8 +638,8 @@ resultDetails.innerHTML = `
     </div>
 `;
 
-        gameStage.classList.add('hidden');
-        resultStage.classList.remove('hidden');
+        gameStage.classList.add("hidden");
+        resultStage.classList.remove("hidden");
     }
 
     function startTimer() {
@@ -623,7 +648,10 @@ resultDetails.innerHTML = `
         timerInterval = setInterval(() => {
             if (!startTime) return;
             const elapsedSeconds = (Date.now() - startTime) / 1000;
-            const remaining = Math.max(0, Math.ceil(maxSeconds - elapsedSeconds));
+            const remaining = Math.max(
+                0,
+                Math.ceil(maxSeconds - elapsedSeconds),
+            );
             timerDisplay.textContent = `${remaining}s`;
             if (statRemaining) statRemaining.textContent = `${remaining}s`;
             if (remaining <= 0) {
@@ -637,9 +665,11 @@ resultDetails.innerHTML = `
         const pool = getSentencePool();
         currentSentence = pool[Math.floor(Math.random() * pool.length)];
         renderSentence(currentSentence);
-        sentenceElement.classList.add('sentence-loading');
-        requestAnimationFrame(() => sentenceElement.classList.remove('sentence-loading'));
-        inputElement.value = '';
+        sentenceElement.classList.add("sentence-loading");
+        requestAnimationFrame(() =>
+            sentenceElement.classList.remove("sentence-loading"),
+        );
+        inputElement.value = "";
         inputElement.disabled = false;
         inputElement.focus({ preventScroll: true });
         if (startSession && !sessionStarted) {
@@ -647,46 +677,50 @@ resultDetails.innerHTML = `
             startTime = Date.now();
             startTimer();
         }
-        result.textContent = startSession ? 'Timer started. Keep typing to continue.' : 'Start typing to begin the countdown.';
+        result.textContent = startSession
+            ? "Timer started. Keep typing to continue."
+            : "Start typing to begin the countdown.";
         // ensure pending state
-        const spans = sentenceElement.querySelectorAll('span');
-        spans.forEach(s => s.className = 'pending');
+        const spans = sentenceElement.querySelectorAll("span");
+        spans.forEach((s) => (s.className = "pending"));
     }
 
     function setDifficulty(mode, { resetGame = false } = {}) {
         selectedDifficulty = mode;
-        difficultyButtons.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.mode === mode);
+        difficultyButtons.forEach((btn) => {
+            btn.classList.toggle("active", btn.dataset.mode === mode);
         });
         updateDifficultyDisplay();
-        if (resetGame && startStage.classList.contains('hidden')) {
+        if (resetGame && startStage.classList.contains("hidden")) {
             resetUI();
             generateSentence({ startSession: false });
         }
     }
 
-    difficultyButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            setDifficulty(btn.dataset.mode, { resetGame: startStage.classList.contains('hidden') });
+    difficultyButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            setDifficulty(btn.dataset.mode, {
+                resetGame: startStage.classList.contains("hidden"),
+            });
         });
     });
 
-    startButton.addEventListener('click', () => {
-        startStage.classList.add('hidden');
+    startButton.addEventListener("click", () => {
+        startStage.classList.add("hidden");
         // ensure result stage hidden
-        resultStage.classList.add('hidden');
-        gameStage.classList.remove('hidden');
+        resultStage.classList.add("hidden");
+        gameStage.classList.remove("hidden");
         resetUI();
         generateSentence({ startSession: true });
     });
 
-    newSentenceBtn.addEventListener('click', () => {
+    newSentenceBtn.addEventListener("click", () => {
         generateSentence();
     });
 
     // Inline start button (in-game) — prepares a new sentence and focuses input
     if (startInlineBtn) {
-        startInlineBtn.addEventListener('click', () => {
+        startInlineBtn.addEventListener("click", () => {
             // Inline start: reset and auto-start the test
             resetUI();
             generateSentence({ startSession: true });
@@ -694,26 +728,26 @@ resultDetails.innerHTML = `
     }
 
     // Restart test: go back to home/start
-    restartBtnEl.addEventListener('click', () => {
+    restartBtnEl.addEventListener("click", () => {
         resetUI();
-        resultStage.classList.add('hidden');
-        gameStage.classList.add('hidden');
-        startStage.classList.remove('hidden');
+        resultStage.classList.add("hidden");
+        gameStage.classList.add("hidden");
+        startStage.classList.remove("hidden");
     });
 
     // Retry same difficulty: go back to game stage and start a new sentence
-    retryBtnEl.addEventListener('click', () => {
-        resultStage.classList.add('hidden');
-        gameStage.classList.remove('hidden');
+    retryBtnEl.addEventListener("click", () => {
+        resultStage.classList.add("hidden");
+        gameStage.classList.remove("hidden");
         resetUI();
         generateSentence({ startSession: true });
     });
 
-    resetBtn.addEventListener('click', () => {
+    resetBtn.addEventListener("click", () => {
         resetUI();
-        gameStage.classList.add('hidden');
-        resultStage.classList.add('hidden');
-        startStage.classList.remove('hidden');
+        gameStage.classList.add("hidden");
+        resultStage.classList.add("hidden");
+        startStage.classList.remove("hidden");
     });
 
     function calculateMetrics(text, sentence) {
@@ -722,7 +756,7 @@ resultDetails.innerHTML = `
         let incorrect = 0;
         for (let index = 0; index < cappedText.length; index += 1) {
             const typedChar = cappedText[index];
-            const expectedChar = sentence[index] || '';
+            const expectedChar = sentence[index] || "";
             if (typedChar === expectedChar) {
                 correct += 1;
             } else {
@@ -730,11 +764,13 @@ resultDetails.innerHTML = `
             }
         }
         const chars = cappedText.length;
-        const words = cappedText.trim() ? cappedText.trim().split(/\s+/).length : 0;
+        const words = cappedText.trim()
+            ? cappedText.trim().split(/\s+/).length
+            : 0;
         return { correct, incorrect, chars, words };
     }
 
-    inputElement.addEventListener('input', () => {
+    inputElement.addEventListener("input", () => {
         const typedText = inputElement.value;
 
         if (!startTime) {
@@ -742,32 +778,32 @@ resultDetails.innerHTML = `
             startTimer();
         }
 
-        const spans = sentenceElement.querySelectorAll('span');
+        const spans = sentenceElement.querySelectorAll("span");
         const currentStats = calculateMetrics(typedText, currentSentence);
         let correctChars = 0;
         let incorrectChars = 0;
 
         spans.forEach((span, index) => {
-            span.classList.remove('correct', 'incorrect', 'current', 'pending');
+            span.classList.remove("correct", "incorrect", "current", "pending");
 
             const expected = currentSentence[index];
             const typed = typedText[index];
 
             if (index === typedText.length) {
-                span.classList.add('current');
+                span.classList.add("current");
                 return;
             }
 
             if (typed == null) {
-                span.classList.add('pending');
+                span.classList.add("pending");
                 return;
             }
 
             if (typed === expected) {
-                span.classList.add('correct');
+                span.classList.add("correct");
                 correctChars += 1;
             } else {
-                span.classList.add('incorrect');
+                span.classList.add("incorrect");
                 incorrectChars += 1;
             }
         });
@@ -777,8 +813,11 @@ resultDetails.innerHTML = `
         const liveIncorrect = totalIncorrectChars + currentStats.incorrect;
         const liveChars = totalTypedChars + currentStats.chars;
         const liveWords = totalWordsTyped + currentStats.words;
-        const accuracy = liveChars ? Math.round((liveCorrect / liveChars) * 100) : 0;
-        const wpm = currentTime > 0 ? Math.round((liveWords / currentTime) * 60) : 0;
+        const accuracy = liveChars
+            ? Math.round((liveCorrect / liveChars) * 100)
+            : 0;
+        const wpm =
+            currentTime > 0 ? Math.round((liveWords / currentTime) * 60) : 0;
 
         if (statWpm) statWpm.textContent = wpm;
         if (statAccuracy) statAccuracy.textContent = `${accuracy}%`;
@@ -786,7 +825,12 @@ resultDetails.innerHTML = `
         if (statCorrect) statCorrect.textContent = liveCorrect;
         if (statIncorrect) statIncorrect.textContent = liveIncorrect;
         if (statRemaining && startTime) {
-            const remaining = Math.max(0, Math.ceil(difficultyConfig[selectedDifficulty].seconds - currentTime));
+            const remaining = Math.max(
+                0,
+                Math.ceil(
+                    difficultyConfig[selectedDifficulty].seconds - currentTime,
+                ),
+            );
             statRemaining.textContent = `${remaining}s`;
         }
 
@@ -803,7 +847,6 @@ resultDetails.innerHTML = `
             totalWordsTyped += currentStats.words;
             sentencesCompleted += 1;
             generateSentence();
-
         }
     });
 

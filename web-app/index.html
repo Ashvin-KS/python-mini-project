@@ -64,7 +64,7 @@
             <ul>
               <li>Type a project name — <code>snake</code>, <code>quiz</code></li>
               <li>Filter by tag — <code>game</code>, <code>math</code>, <code>utility</code></li>
-              <li>Press <code>Ctrl+K</code> to focus search</li>
+              <!-- <li>Press <code>Ctrl+K</code> to focus search</li> -->
             </ul>
           </div>
           <div class="no-results-message" id="noResultsMessage" style="display:none">No projects found. Try a different keyword.</div>
@@ -73,6 +73,7 @@
     </div>
   </div>
 
+  
 
     
 <template id="projectsTemplate">
@@ -701,5 +702,11 @@ print('Hello, World!')" spellcheck="false"></textarea>
 <script src="js/main.js"></script>
 <script src="js/hero-canvas.js"></script>
 <script>lucide.createIcons();</script>
+
+    <div class="search-kbd-hint" id="searchKbdHint" aria-hidden="true">
+      Press <kbd>Ctrl</kbd><span>+</span><kbd>K</kbd> to focus search
+    </div>      
+
+
 </body>
 </html>
