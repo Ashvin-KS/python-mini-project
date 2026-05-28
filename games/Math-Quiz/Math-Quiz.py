@@ -233,6 +233,7 @@ class MathQuizGUI:
     def create_home_screen(self):
         self.clear_panel()
         self.game_active = False
+        
         self.root.bind("<Escape>", self.handle_escape)
         
 
