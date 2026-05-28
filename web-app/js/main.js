@@ -149,7 +149,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var savedTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
     syncThemeColor(savedTheme);
-    themeToggle.innerHTML = savedTheme === 'light'
+    // Prefer showing a sun icon when the site is dark (site's main theme).
+    // Show sun for dark theme, moon for light theme so reload displays sun by default.
+    themeToggle.innerHTML = savedTheme === 'dark'
       ? '<i class="fas fa-sun"></i>'
       : '<i class="fas fa-moon"></i>';
     updateThemeToggleAria(savedTheme === 'light');
@@ -160,7 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
       html.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
       syncThemeColor(next);
-      themeToggle.innerHTML = next === 'light'
+      // After toggling, show sun when the new theme is dark, moon when it's light.
+      themeToggle.innerHTML = next === 'dark'
         ? '<i class="fas fa-sun"></i>'
         : '<i class="fas fa-moon"></i>';
       updateThemeToggleAria(next === 'light');
