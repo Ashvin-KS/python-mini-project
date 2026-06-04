@@ -89,32 +89,9 @@
           </button>
         </div>
       </div>
-      <span class="logo-tagline">games, math &amp; terminal toys</span>
-    </a>
-  </div>
+    </nav>
 
-  <div class="sidebar-search">
-    <div class="search-box" style="position:relative">
-      <i class="fas fa-search" aria-hidden="true"></i>
-      <input aria-label="Search projects" id="searchInput" placeholder="Search projects or tags..." type="text" role="combobox" aria-autocomplete="list" aria-controls="resultsList" aria-expanded="false"/>
-      <div class="search-dropdown" id="searchDropdown" aria-live="polite">
-        <div class="dropdown-content" id="searchDropdownContent">
-          <div class="search-loader" id="searchLoader" style="display:none"><div class="spinner"></div></div>
-          <div class="recent-searches-section" id="recentSearchesSection">
-            <div class="dropdown-section-title">
-              <span>Recent</span>
-              <button id="clearRecentBtn" class="recent-clear-all-btn" aria-label="Clear recent searches">Clear All</button>
-            </div>
-            <div class="dropdown-list" id="recentSearchesList"></div>
-          </div>
-          <div class="results-section" id="resultsSection" style="display:none">
-            <div class="dropdown-section-title">Projects</div>
-            <div class="dropdown-list" id="resultsList" role="listbox"></div>
-          </div>
-          <span class="logo-tagline">games, math &amp; terminal toys</span>
-        </a>
-      </div>
-
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-search">
         <div class="search-box" style="position: relative">
           <i class="fas fa-search" aria-hidden="true"></i>
@@ -138,7 +115,10 @@
                 <div class="spinner"></div>
               </div>
               <div class="recent-searches-section" id="recentSearchesSection">
-                <div class="dropdown-section-title">Recent</div>
+                <div class="dropdown-section-title">
+                  <span>Recent</span>
+                  <button id="clearRecentBtn" class="recent-clear-all-btn" aria-label="Clear recent searches">Clear All</button>
+                </div>
                 <div class="dropdown-list" id="recentSearchesList"></div>
               </div>
               <div
@@ -1455,38 +1435,32 @@
         if (typeof window.openProjectSafe !== "function") {
           window.openProjectSafe = window.openProjectModal;
         }
-    });
-    
-    // Override the existing openProjectSafe if needed
-    if (typeof window.openProjectSafe !== 'function') {
-        window.openProjectSafe = window.openProjectModal;
-    }
-    
-    console.log('✅ Modal fix loaded');
-})();
-</script>
 
-<!-- Info Modal Popup -->
-<div id="infoModalOverlay" class="info-modal-overlay">
-  <div class="info-modal-content">
-    <button class="info-modal-close" id="infoModalClose">&times;</button>
-    <h3 id="infoModalTitle">How to Play</h3>
-    <ul id="infoModalList"></ul>
-    <button class="info-modal-btn" id="infoModalGotIt">Got it</button>
-  </div>
-</div>
+        console.log('✅ Modal fix loaded');
+      })();
+    </script>
 
-<!-- Themed Confirm Modal (used for Clear All) -->
-<div id="confirmModalOverlay" class="confirm-modal-overlay" aria-hidden="true">
-  <div class="confirm-modal-content" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
-    <h3 id="confirmModalTitle">Confirm</h3>
-    <p id="confirmModalMessage"></p>
-    <div class="confirm-modal-actions">
-      <button id="confirmCancelBtn" class="btn btn-secondary">Cancel</button>
-      <button id="confirmOkBtn" class="btn btn-primary">Confirm</button>
+    <!-- Info Modal Popup -->
+    <div id="infoModalOverlay" class="info-modal-overlay">
+      <div class="info-modal-content">
+        <button class="info-modal-close" id="infoModalClose">&times;</button>
+        <h3 id="infoModalTitle">How to Play</h3>
+        <ul id="infoModalList"></ul>
+        <button class="info-modal-btn" id="infoModalGotIt">Got it</button>
+      </div>
     </div>
-  </div>
-</div>
 
-</body>
+    <!-- Themed Confirm Modal (used for Clear All) -->
+    <div id="confirmModalOverlay" class="confirm-modal-overlay" aria-hidden="true">
+      <div class="confirm-modal-content" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+        <h3 id="confirmModalTitle">Confirm</h3>
+        <p id="confirmModalMessage"></p>
+        <div class="confirm-modal-actions">
+          <button id="confirmCancelBtn" class="btn btn-secondary">Cancel</button>
+          <button id="confirmOkBtn" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+  </body>
 </html>
