@@ -703,7 +703,7 @@ function initColorPalette() {
         palette.colors.forEach(color => {
             const swatch = document.createElement('div');
             swatch.className = 'cp-swatch';
-            swatch.textContent = `
+            swatch.innerHTML = `
                 <div class="cp-swatch-color" style="background:${color.hex};"></div>
                 <div class="cp-swatch-info">
                     <span class="cp-swatch-name">${color.name}</span>

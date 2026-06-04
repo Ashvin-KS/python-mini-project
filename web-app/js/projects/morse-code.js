@@ -220,7 +220,7 @@ function initMorseCode() {
         if (char !== ' ') {
             const item = document.createElement('div');
             item.className = 'chart-item';
-            item.textContent = `
+            item.innerHTML = `
                 <div class="chart-char">${char}</div>
                 <div class="chart-morse">${morseCode[char]}</div>
             `;

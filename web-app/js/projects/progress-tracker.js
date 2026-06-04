@@ -78,14 +78,14 @@ function initProgressTracker() {
         for (const [cat, projects] of Object.entries(PROJECTS)) {
             const catDone = projects.filter(p => done.includes(p)).length;
             const sec = document.createElement('div');
-            sec.textContent = '<div class="pt-cat-title">' + cat + ' &nbsp;·&nbsp; ' + catDone + '/' + projects.length + '</div>';
+            sec.innerHTML = '<div class="pt-cat-title">' + cat + ' &nbsp;·&nbsp; ' + catDone + '/' + projects.length + '</div>';
             const grid = document.createElement('div');
             grid.className = 'pt-grid';
             projects.forEach(name => {
                 const isDone = done.includes(name);
                 const card = document.createElement('div');
                 card.className = 'pt-card' + (isDone ? ' done' : '');
-                card.textContent = '<span class="pt-tick">' + (isDone ? '✅' : '⬜') + '</span><span class="pt-name">' + name + '</span>';
+                card.innerHTML = '<span class="pt-tick">' + (isDone ? '✅' : '⬜') + '</span><span class="pt-name">' + name + '</span>';
                 card.onclick = () => toggle(name);
                 grid.appendChild(card);
             });
