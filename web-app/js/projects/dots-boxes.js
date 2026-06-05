@@ -789,7 +789,7 @@ function initDotsBoxes() {
 
         const overlay = document.createElement('div');
         overlay.className = 'winner-overlay';
-        overlay.textContent = `
+        overlay.innerHTML = `
             <div class="winner-popup" role="dialog" aria-modal="true" aria-label="Game over">
                 <h2>${title}</h2>
                 <div class="winner-subtitle">${subtitle}</div>

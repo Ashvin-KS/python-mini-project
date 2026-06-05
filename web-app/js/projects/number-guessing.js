@@ -275,91 +275,116 @@ function initNumberGuessing() {
     });
 
     function startGame(diffKey) {
-        currentDiff  = diffKey;
-        const config = DIFFICULTIES[diffKey];
-        maxAttempts  = config.attempts;
-        minRange     = config.min;
-        maxRange     = config.max;
-        secretNumber = Math.floor(Math.random() * (config.max - config.min + 1)) + config.min;
-        attempts     = 0;
+    currentDiff  = diffKey;
+    const config = DIFFICULTIES[diffKey];
+    maxAttempts  = config.attempts;
+    secretNumber = Math.floor(Math.random() * (config.max - config.min + 1)) + config.min;
+    attempts     = 0;
+    minRange     = config.min;
+    maxRange     = config.max;
+    guessInput.min = minRange;
+    guessInput.max = maxRange;
 
-        // Badge
-        difficultyBadge.textContent = config.label;
-        difficultyBadge.className   = `difficulty-badge ${diffKey}`;
+    // Badge
+    difficultyBadge.textContent = config.label;
+    difficultyBadge.className   = `difficulty-badge ${diffKey}`;
 
-        // Instruction
-        gameInstructions.textContent =
-            `I'm thinking of a number between ${config.min} and ${config.max}!`;
+    // Instruction
+    gameInstructions.textContent =
+        `I'm thinking of a number between ${config.min} and ${config.max}!`;
 
-        // Input bounds
-        guessInput.min = config.min;
-        guessInput.max = config.max;
-        guessInput.value = '';
+    // Input bounds - IMPORTANT!
+    guessInput.min = config.min;
+    guessInput.max = config.max;
+    guessInput.value = '';
 
-        // Stats
-        attemptsLeftEl.textContent = maxAttempts;
-        rangeDisplay.textContent   = `${config.min}–${config.max}`;
-        feedback.textContent       = '';
-        feedback.style.color       = '';
+    // Stats
+    attemptsLeftEl.textContent = maxAttempts;
+    rangeDisplay.textContent   = `${config.min}–${config.max}`;
+    feedback.textContent       = '';
+    feedback.style.color       = '';
 
-        updateBar(maxAttempts, maxAttempts);
-        updateBestScore(diffKey);
+    updateBar(maxAttempts, maxAttempts);
+    updateBestScore(diffKey);
 
-        guessInput.disabled = false;
-        submitBtn.disabled  = false;
+    guessInput.disabled = false;
+    submitBtn.disabled  = false;
 
-        difficultyScreen.style.display = 'none';
-        gameScreen.style.display       = '';
-        guessInput.focus();
-    }
+    difficultyScreen.style.display = 'none';
+    gameScreen.style.display       = '';
+    guessInput.focus();
+}
 
     // Gameplay 
     submitBtn.addEventListener('click', makeGuess);
     guessInput.addEventListener('keydown', e => { if (e.key === 'Enter') makeGuess(); });
 
     function makeGuess() {
-        const config = DIFFICULTIES[currentDiff];
-        const guess  = parseInt(guessInput.value);
+    const config = DIFFICULTIES[currentDiff];
+    const guess = parseInt(guessInput.value);
+    
+    // Simple validation - just check if it's a number
+    if (isNaN(guess)) {
+        feedback.textContent = `⚠️ Please enter a valid number!`;
+        feedback.style.color = 'var(--warning-color)';
+        guessInput.value = '';
+        guessInput.focus();
+        return;
+    }
+    
+    // Check if guess is within current possible range
+    if (guess < minRange || guess > maxRange) {
+        feedback.textContent = `⚠️ Please enter a number between ${minRange} and ${maxRange}!`;
+        feedback.style.color = 'var(--warning-color)';
+        guessInput.value = '';
+        guessInput.focus();
+        return;
+    }
 
-        if (isNaN(guess) || guess < config.min || guess > config.max) {
-            feedback.textContent = `⚠️ Please enter a number between ${config.min} and ${config.max}!`;
-            feedback.style.color = 'var(--warning-color)';
-            return;
-        }
+    attempts++;
+    const remaining = maxAttempts - attempts;
+    attemptsLeftEl.textContent = remaining;
+    updateBar(remaining, maxAttempts);
 
-        attempts++;
-        const remaining = maxAttempts - attempts;
-        attemptsLeftEl.textContent = remaining;
-        updateBar(remaining, maxAttempts);
-
-        if (guess === secretNumber) {
-            feedback.textContent = `🎉 Correct! You found it in ${attempts} attempt${attempts === 1 ? '' : 's'}!`;
-            feedback.style.color = 'var(--success-color)';
-            guessInput.disabled  = true;
-            submitBtn.disabled   = true;
-            saveBestScore(currentDiff, attempts);
+    if (guess === secretNumber) {
+        feedback.textContent = `🎉 Correct! You found it in ${attempts} attempt${attempts === 1 ? '' : 's'}!`;
+        feedback.style.color = 'var(--success-color)';
+        guessInput.disabled = true;
+        submitBtn.disabled = true;
+        saveBestScore(currentDiff, attempts);
+    } else {
+        if (guess < secretNumber) {
+            feedback.textContent = '📈 Too low! Try higher!';
+            minRange = guess + 1;
         } else {
-            if (guess < secretNumber) {
-                feedback.textContent = '📈 Too low! Try higher!';
-                feedback.style.color = 'var(--primary-color)';
-                minRange = Math.max(minRange, guess + 1);
-            } else {
-                feedback.textContent = '📉 Too high! Try lower!';
-                feedback.style.color = 'var(--danger-color)';
-                maxRange = Math.min(maxRange, guess - 1);
-            }
-            rangeDisplay.textContent = `${minRange}–${maxRange}`;
+            feedback.textContent = '📉 Too high! Try lower!';
+            maxRange = guess - 1;
+        }
+        
+        feedback.style.color = guess < secretNumber ? 'var(--primary-color)' : 'var(--danger-color)';
+        
+        // Update the input's min/max attributes
+        guessInput.min = minRange;
+        guessInput.max = maxRange;
+        
+        // Display narrowed range
+        rangeDisplay.textContent = `${minRange}–${maxRange}`;
 
-            if (remaining <= 0) {
+        if (remaining <= 1) {
+            if (remaining === 1) {
+                feedback.textContent = `⚠️ Last attempt! The number is between ${minRange} and ${maxRange}`;
+            } else {
                 feedback.textContent = `💀 Out of attempts! The number was ${secretNumber}.`;
                 feedback.style.color = 'var(--danger-color)';
-                guessInput.disabled  = true;
-                submitBtn.disabled   = true;
+                guessInput.disabled = true;
+                submitBtn.disabled = true;
             }
         }
-
-        guessInput.value = '';
     }
+
+    guessInput.value = '';
+    guessInput.focus();
+}
 
     // Progress bar
     function updateBar(left, total) {
