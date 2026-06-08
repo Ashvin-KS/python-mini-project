@@ -6169,24 +6169,7 @@ body.sidebar-collapsed .sidebar-dock .sidebar-footer button {
 }
 
 /* Main content shift for expanded sidebar */
-body.sidebar-active #main-content,
-body.sidebar-active main {
-  margin-left: 280px !important;
-  width: calc(100% - 280px) !important;
-}
 
-/* Main content shift for collapsed sidebar */
-body.sidebar-collapsed #main-content,
-body.sidebar-collapsed main {
-  margin-left: 80px !important;
-  width: calc(100% - 80px) !important;
-}
-
-body:not(.sidebar-active):not(.sidebar-collapsed) #main-content,
-body:not(.sidebar-active):not(.sidebar-collapsed) main {
-  margin-left: 0 !important;
-  width: 100% !important;
-}
 
 /* Container full width */
 #main-content .container,
