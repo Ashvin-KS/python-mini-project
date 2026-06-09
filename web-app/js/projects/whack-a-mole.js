@@ -1,4 +1,4 @@
-function getWhackaMoleHTML() {
+function getWhackAMoleHTML() {
     return `
         <div class="project-content">
             <h2>🔨 Whack-a-Mole</h2>
