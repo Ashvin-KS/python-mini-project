@@ -8,6 +8,10 @@ import time
 import os
 import sys
 
+# Add root directory to sys.path to import utils package
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from utils import save_score, get_top_scores
+
 # Windows only for non-blocking input
 try:
     import msvcrt
@@ -194,14 +198,19 @@ while True:
         avg_rt = sum(reaction_times) / len(reaction_times)
         print(f"  ⚡ Avg Reaction: {avg_rt:.2f}s")
 
-    if accuracy >= 90:
-        print("\n  🌟 Legendary reflexes!")
-    elif accuracy >= 70:
-        print("\n  👏 Great job!")
-    elif accuracy >= 50:
-        print("\n  😅 Not bad — keep practising!")
+    # Save and display high scores
+    name = input("\n  Enter your name for the high scores board: ").strip()
+    if name:
+        save_score("Whack-a-Mole", name, score)
+    
+    print("\n🏆 ===== HIGH SCORES BOARD =====")
+    top_scores = get_top_scores("Whack-a-Mole", 5)
+    if top_scores:
+        for idx, (p_name, p_score, p_time) in enumerate(top_scores):
+            print(f"  {idx+1}. {p_name:15s} : {p_score:4d}  ({p_time})")
     else:
-        print("\n  🐭 The moles win this round...")
+        print("  No high scores yet!")
+    print("================================")
 
     while True:
         replay = input("\n  Play again? (y / n): ").strip().lower()
