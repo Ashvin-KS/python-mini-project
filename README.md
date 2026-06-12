@@ -90,6 +90,141 @@ python-mini-project/
 └── requirements.txt
 ```
 
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.10 or higher
+- Git (for cloning the repository)
+- pip (Python package manager)
+
+### Installation Steps
+
+#### 1. Clone the Repository
+
+```bash
+git clone https://github.com/steam-bell-92/python-mini-project.git
+cd python-mini-project
+```
+
+#### 2. Create a Virtual Environment
+
+For Linux/macOS:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+For Windows (Command Prompt):
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+For Windows (PowerShell):
+```bash
+python -m venv venv
+venv\Scripts\Activate.ps1
+```
+
+#### 3. Install Dependencies
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### Running Command-Line Projects
+
+Each Python project in `games/`, `math/`, and `utilities/` folders can be run independently.
+
+#### Example: Running a Game
+
+```bash
+cd games/Snake-Game
+python Snake-Game.py
+```
+
+#### Example: Running a Math Project
+
+```bash
+cd math/Fibonacci-Series
+python Fibonacci-Series.py
+```
+
+#### Example: Running a Utility
+
+```bash
+cd utilities/Text-to-Morse
+python Text-to-Morse.py
+```
+
+### Running the Web App
+
+The web application provides a browser-based interface for all projects.
+
+#### Prerequisites for Web App
+
+The web app requires Node.js and npm:
+- Download from https://nodejs.org/ (v16 or higher recommended)
+- Verify installation: `node --version && npm --version`
+
+#### Steps to Run Web App
+
+```bash
+cd web-app
+npm install
+npm start
+```
+
+The app will open at `http://localhost:3000` (or your configured port).
+
+### Running Tests
+
+To verify that the projects work correctly, run the test suite:
+
+```bash
+pytest tests/ -v
+```
+
+For specific test file:
+```bash
+pytest tests/test_armstrong.py -v
+```
+
+### Development Workflow
+
+#### Creating a New Project
+
+1. Choose appropriate directory: `games/`, `math/`, or `utilities/`
+2. Create a new folder with your project name (use PascalCase)
+3. Add your `.py` file with the same name as the folder
+4. Include a `README.md` in your project folder with usage instructions
+5. Add tests in `tests/` directory with prefix `test_`
+
+#### Code Guidelines
+
+- Follow PEP 8 style guide
+- Write docstrings for functions and classes
+- Add unit tests for your code
+- Test your project before submitting a PR
+
+#### Virtual Environment Reminder
+
+Always activate your virtual environment before working:
+```bash
+# Linux/macOS
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
+```
+
+Deactivate when done:
+```bash
+deactivate
+```
+
 ## 🧩 What’s Inside
 
 - Games for quick interactive fun
