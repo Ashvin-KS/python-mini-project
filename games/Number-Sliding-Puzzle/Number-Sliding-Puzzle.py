@@ -1,14 +1,14 @@
-import sys
 import os
+import sys
+import random
 
-# Point Python to the root directory so it can find the utils folder
+# 1. Fix sys.path FIRST before trying to import custom utilities
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from utils.validation import get_int, get_yes_no
+
+
 def main():
-    global choice, empty_col, empty_row, i, item, j, moves, number_col, number_row, numbers, puzzle, row, winning_puzzle
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-    from utils.validation import get_int, get_yes_no
-    import random
-
-
     print("🧩 Emoji Sliding Puzzle Game 🧩")
 
     while True:
@@ -66,6 +66,7 @@ def main():
                 print("⚠️ Number not found!")
                 continue
 
+            # Validate neighbor logic and swap
             if (abs(number_row - empty_row) == 1 and number_col == empty_col) or \
                (abs(number_col - empty_col) == 1 and number_row == empty_row):
                 puzzle[empty_row][empty_col] = choice
@@ -77,9 +78,10 @@ def main():
 
         print("\n👋 Thanks for playing Emoji Sliding Puzzle!\n")
     
-        # get_yes_no loops automatically and returns True for 'y' and False for 'n'
+        # Check if the player wants to replay
         if not get_yes_no("\n🔄 Play again? (y/n): "):
             break
+
 
 if __name__ == '__main__':
     main()
