@@ -209,7 +209,11 @@ function setupModalInfoButton(projectName) {
 /* ── DOMContentLoaded ──────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", function () {
   // Initially hide sidebar - will be shown by IntersectionObserver
+  var pageCategory = document.body.getAttribute("data-page");
   document.body.classList.remove("sidebar-active");
+  if (pageCategory && window.innerWidth >= 1100) {
+    document.body.classList.add("sidebar-active");
+  }
   function repairLegacyHomeLayoutNow() {
     var legacyHost = document.querySelector(".hero-code-snippets")
       ? document.querySelector(".hero-code-snippets").closest(".hero-section")
@@ -356,8 +360,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var mobileSidebarToggle = document.getElementById("mobileSidebarToggle");
   var mainSidebar = document.getElementById("mainSidebar");
   if (mobileSidebarToggle && mainSidebar) {
-    mobileSidebarToggle.addEventListener("click", function () {
+    mobileSidebarToggle.addEventListener("click", function (e) {
+      e.stopPropagation();
       var active = mainSidebar.classList.toggle("open");
+      document.body.classList.toggle("sidebar-active", active);
       mobileSidebarToggle.setAttribute("aria-expanded", active);
       var icon = mobileSidebarToggle.querySelector("i");
       if (icon) icon.className = active ? "fas fa-times" : "fas fa-bars";
@@ -368,10 +374,11 @@ document.addEventListener("DOMContentLoaded", function () {
         mainSidebar &&
         mobileSidebarToggle &&
         !mainSidebar.contains(e.target) &&
-        e.target !== mobileSidebarToggle &&
+        !mobileSidebarToggle.contains(e.target) &&
         mainSidebar.classList.contains("open")
       ) {
         mainSidebar.classList.remove("open");
+        document.body.classList.remove("sidebar-active");
         mobileSidebarToggle.setAttribute("aria-expanded", "false");
         var icon = mobileSidebarToggle.querySelector("i");
         if (icon) icon.className = "fas fa-bars";
@@ -596,6 +603,12 @@ document.addEventListener("DOMContentLoaded", function () {
     st.addEventListener("click", function () {
       if (window.innerWidth < 1100) {
         document.body.classList.remove("sidebar-active");
+        if (mainSidebar) mainSidebar.classList.remove("open");
+        if (mobileSidebarToggle) {
+          mobileSidebarToggle.setAttribute("aria-expanded", "false");
+          var icon = mobileSidebarToggle.querySelector("i");
+          if (icon) icon.className = "fas fa-bars";
+        }
       }
     });
     st.addEventListener("click", function () {
