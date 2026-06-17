@@ -6382,15 +6382,34 @@ body.sidebar-collapsed .sidebar-dock .sidebar-footer button {
   max-width: 100% !important;
 }
 
-/* Remove any extra padding/margin */
-.projects-section {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+/*
+ * Desktop sidebar-aware layout keeps the projects section shifted past the
+ * fixed sidebar dock (see the @media (min-width: 1100px) block above for
+ * padding-left values). The rules below intentionally only apply on mobile,
+ * where the sidebar slides in as a drawer and must not push the main column.
+ */
+@media (max-width: 1099px) {
+  .projects-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.sidebar-active .projects-section,
+  body.sidebar-collapsed .projects-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
 }
 
-body.sidebar-active .projects-section,
-body.sidebar-collapsed .projects-section {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
+/* Smooth main-content shift when the sidebar opens, closes, or collapses on
+ * desktop. The padding-left values themselves are defined above inside the
+ * 1100px media query. */
+@media (min-width: 1100px) {
+  .projects-section,
+  .hero-section,
+  .hero-timeline-section,
+  .playground-section,
+  .footer {
+    transition: padding-left 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
 }
