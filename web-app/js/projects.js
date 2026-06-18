@@ -26,7 +26,8 @@ function getProjectHTML(projectName) {
         'unit-converter': getUnitConverterHTML(),
         'resume-analyzer': getResumeAnalyzerHTML(),
         'reverse-hangman': () => getReverseHangmanHTML,
-        'snake-game': getSnakeGameHTML()
+        'snake-game': getSnakeGameHTML(),
+        'bubble-sort': getBubbleSortHTML(),
     };
     
     return projects[projectName] || '<h2>Project Coming Soon!</h2>';
