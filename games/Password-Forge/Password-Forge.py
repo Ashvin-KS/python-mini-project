@@ -1,4 +1,4 @@
-import random
+import secrets
 import re
 
 def main():
@@ -28,11 +28,11 @@ def main():
 
     # ---------------- RANDOM GAME VALUES ---------------- #
 
-    banned_digit = random.randint(0, 9)
+    banned_digit = secrets.randbelow(10)
 
-    target_sum = random.randint(12, 24)
+    target_sum = secrets.randbelow(13) + 12
 
-    lucky_letter = random.choice(
+    lucky_letter = secrets.choice(
         "abcdefghijklmnopqrstuvwxyz"
     )
 
