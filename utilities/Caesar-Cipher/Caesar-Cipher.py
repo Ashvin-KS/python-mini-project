@@ -38,6 +38,13 @@ def main() -> None:
         elif choice in ["E", "ENCRYPT", "D", "DECRYPT"]:
             message = input("📝 Enter your message: ")
             
+            if not message:
+                print("❌ Error: Message cannot be empty.\n")
+                continue
+            
+            if not any(c.isalpha() for c in message):
+                print("⚠️ Warning: Message contains no alphabetic characters. Cipher will return unchanged.\n")
+            
             try:
                 shift = int(input("🔑 Enter the shift key (whole number): "))
             except ValueError:
